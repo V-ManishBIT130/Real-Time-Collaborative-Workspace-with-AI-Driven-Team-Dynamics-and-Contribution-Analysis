@@ -1,0 +1,55 @@
+/* ===== CollabLens — Global Styles (Light Theme) ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f8f9fa;
+  --bg-card: #ffffff;
+  --border: #e2e5e9;
+  --text: #1a1a2e;
+  --text-secondary: #555;
+  --text-muted: #888;
+  --accent: #2563eb;
+  --accent-light: #eff4ff;
+  --accent-hover: #1d4ed8;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --amber: #d97706;
+  --radius: 8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+a { color: var(--accent); text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }

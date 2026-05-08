@@ -1,0 +1,213 @@
+/* ===== Lobby Page — Light Clean Theme ===== */
+
+.lobby-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 2rem;
+}
+
+.lobby-container {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.lobby-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo-small span {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+.leave-btn {
+  padding: 0.35rem 0.85rem;
+  background: var(--red-light);
+  color: var(--red);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.leave-btn:hover { background: #fee2e2; }
+
+/* Room Code */
+.room-code-section {
+  text-align: center;
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.room-code-label {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.5rem;
+}
+.room-code-display {
+  display: inline-flex;
+  gap: 0.3rem;
+  cursor: pointer;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius);
+  transition: background 0.15s;
+}
+.room-code-display:hover { background: var(--accent-light); }
+.code-char {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.room-code-hint {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin: 0.5rem 0 0;
+}
+
+/* Session Info */
+.session-info {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.info-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+/* Participants */
+.participants-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+.participants-section h3 {
+  color: var(--text);
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem;
+}
+.participants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.6rem;
+}
+.participant-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.15s;
+}
+.participant-card.is-me {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.participant-card.empty {
+  opacity: 0.45;
+  border-style: dashed;
+}
+.participant-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.empty-avatar {
+  background: #ddd !important;
+  color: #999 !important;
+}
+.participant-name {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.empty-name { color: var(--text-muted) !important; }
+.you-badge {
+  font-size: 0.6rem;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.host-badge {
+  font-size: 0.6rem;
+  color: var(--amber);
+  font-weight: 600;
+}
+
+/* Actions */
+.lobby-actions {
+  display: flex;
+  justify-content: center;
+}
+.start-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.start-btn:hover:not(:disabled) { background: #15803d; }
+.start-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #999;
+}
+.waiting-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
