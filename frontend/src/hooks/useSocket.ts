@@ -9,10 +9,12 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 let socketInstance: Socket | null = null;
 
 /**
- * Returns a singleton Socket.IO connection.
- * Auto-connects on first call, reconnects automatically.
+ * Returns a singleton Socket.IO connection with JWT authentication.
+ * Reads token from localStorage and passes it in handshake.auth.
  */
 export function getSocket(): Socket {
+  const token = localStorage.getItem('collab-lens-token');
+
   if (!socketInstance) {
     socketInstance = io(BACKEND_URL, {
       autoConnect: true,
@@ -22,22 +24,38 @@ export function getSocket(): Socket {
       reconnectionDelayMax: 5000,
       timeout: 10000,
       transports: ['websocket', 'polling'],
-    });
-
-    socketInstance.on('connect', () => {
-      console.log('✅ Socket connected:', socketInstance?.id);
-    });
-
-    socketInstance.on('disconnect', (reason) => {
-      console.log('❌ Socket disconnected:', reason);
+      auth: {
+        token: token || ''
+      }
     });
 
     socketInstance.on('connect_error', (err) => {
-      console.error('⚠️ Socket connection error:', err.message);
+      if (err.message.includes('Authentication error')) {
+        console.warn('Socket auth failed — token may be invalid');
+      }
     });
   }
 
   return socketInstance;
+}
+
+/**
+ * Disconnect and clear the existing socket instance.
+ * Called when the user logs out or token changes.
+ */
+export function disconnectSocket() {
+  if (socketInstance) {
+    socketInstance.disconnect();
+    socketInstance = null;
+  }
+}
+
+/**
+ * Reconnect socket with a fresh token (e.g. after login).
+ */
+export function reconnectSocket() {
+  disconnectSocket();
+  return getSocket();
 }
 
 /**

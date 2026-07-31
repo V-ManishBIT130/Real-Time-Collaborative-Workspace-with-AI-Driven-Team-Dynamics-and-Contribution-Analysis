@@ -39,7 +39,12 @@ export default function Lobby() {
       <div className="lobby-container">
         <div className="lobby-header">
           <div className="logo-small"><span>CollabLens</span></div>
-          <button className="leave-btn" onClick={() => { store.reset(); navigate('/'); }}>Leave</button>
+          <button className="leave-btn" onClick={() => {
+            emit('leave_room', null, () => {
+              store.reset();
+              navigate('/');
+            });
+          }}>Leave</button>
         </div>
 
         <div className="room-code-section">

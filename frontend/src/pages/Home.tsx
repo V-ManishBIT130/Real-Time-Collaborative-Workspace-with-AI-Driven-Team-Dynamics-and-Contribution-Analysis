@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSocketEmit } from '../hooks/useSocket';
 import { useAppStore } from '../store/useAppStore';
+import { useAuthStore } from '../store/useAuthStore';
+import { disconnectSocket } from '../hooks/useSocket';
 import '../styles/Home.css';
 
 export default function Home() {
@@ -9,7 +11,6 @@ export default function Home() {
   const emit = useSocketEmit();
 
   const [mode, setMode] = useState<'select' | 'create' | 'join'>('select');
-  const [userName, setUserNameInput] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [timerDuration, setTimerDuration] = useState(15);
   const [maxParticipants, setMaxParticipants] = useState(5);
@@ -17,21 +18,27 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const { setUserName, setRoom, setParticipants } = useAppStore();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    disconnectSocket();
+    logout();
+    navigate('/auth');
+  };
 
   const handleCreate = () => {
-    if (!userName.trim()) return setError('Please enter your name');
     setError('');
     setLoading(true);
 
-    emit('create_room', { userName: userName.trim(), timerDuration, maxParticipants },
+    emit('create_room', { timerDuration, maxParticipants },
       (res: { success?: boolean; roomCode?: string; participant?: any; error?: string }) => {
         setLoading(false);
         if (res.error) return setError(res.error);
         if (res.success && res.roomCode && res.participant) {
-          setUserName(userName.trim());
+          setUserName(user?.name || '');
           setRoom({
             roomCode: res.roomCode,
-            hostName: userName.trim(),
+            hostName: user?.name || '',
             settings: { timerDuration, maxParticipants },
             myParticipant: res.participant,
           });
@@ -43,17 +50,16 @@ export default function Home() {
   };
 
   const handleJoin = () => {
-    if (!userName.trim()) return setError('Please enter your name');
     if (!roomCode.trim()) return setError('Please enter a room code');
     setError('');
     setLoading(true);
 
-    emit('join_room', { roomCode: roomCode.trim(), userName: userName.trim() },
+    emit('join_room', { roomCode: roomCode.trim() },
       (res: { success?: boolean; room?: any; participant?: any; error?: string }) => {
         setLoading(false);
         if (res.error) return setError(res.error);
         if (res.success && res.room) {
-          setUserName(userName.trim());
+          setUserName(user?.name || '');
           setRoom({
             roomCode: res.room.roomCode,
             hostName: res.room.hostName,
@@ -81,6 +87,26 @@ export default function Home() {
       </div>
 
       <div className="home-container">
+        {/* User Bar */}
+        <div className="user-bar">
+          <div className="user-info">
+            <div className="user-avatar" style={{ background: '#6366f1' }}>
+              {user?.name?.charAt(0).toUpperCase() || '?'}
+            </div>
+            <div className="user-details">
+              <span className="user-name">{user?.name}</span>
+              <span className="user-email">{user?.email}</span>
+            </div>
+          </div>
+          <button className="logout-btn" onClick={handleLogout} title="Sign out">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
+        </div>
+
         {/* Header */}
         <div className="home-header">
           <div className="logo-icon">
@@ -132,18 +158,15 @@ export default function Home() {
               ← Back
             </button>
             <h2>Create a Room</h2>
-            
+
             <div className="form-group">
-              <label htmlFor="create-name">Your Name</label>
-              <input
-                id="create-name"
-                type="text"
-                placeholder="Enter your name"
-                value={userName}
-                onChange={(e) => setUserNameInput(e.target.value)}
-                maxLength={30}
-                autoFocus
-              />
+              <label>Creating as</label>
+              <div className="auth-user-display">
+                <div className="mini-avatar-inline" style={{ background: '#6366f1' }}>
+                  {user?.name?.charAt(0).toUpperCase()}
+                </div>
+                {user?.name}
+              </div>
             </div>
 
             <div className="form-row">
@@ -191,16 +214,13 @@ export default function Home() {
             <h2>Join a Room</h2>
 
             <div className="form-group">
-              <label htmlFor="join-name">Your Name</label>
-              <input
-                id="join-name"
-                type="text"
-                placeholder="Enter your name"
-                value={userName}
-                onChange={(e) => setUserNameInput(e.target.value)}
-                maxLength={30}
-                autoFocus
-              />
+              <label>Joining as</label>
+              <div className="auth-user-display">
+                <div className="mini-avatar-inline" style={{ background: '#6366f1' }}>
+                  {user?.name?.charAt(0).toUpperCase()}
+                </div>
+                {user?.name}
+              </div>
             </div>
 
             <div className="form-group">
@@ -213,6 +233,7 @@ export default function Home() {
                 onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
                 maxLength={6}
                 className="room-code-input"
+                autoFocus
               />
             </div>
 
@@ -227,10 +248,6 @@ export default function Home() {
             </button>
           </div>
         )}
-
-        <p className="demo-note">
-          🔧 Demo Mode — JWT authentication will be added in Phase 1
-        </p>
       </div>
     </div>
   );

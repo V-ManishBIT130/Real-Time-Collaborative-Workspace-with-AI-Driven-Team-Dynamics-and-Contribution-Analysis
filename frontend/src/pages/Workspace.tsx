@@ -2,6 +2,9 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocketEvent, useSocketEmit } from '../hooks/useSocket';
 import { useAppStore } from '../store/useAppStore';
+import { useAuthStore } from '../store/useAuthStore';
+import ToastContainer from '../components/ToastContainer';
+import type { ToastNotification } from '../types/toast';
 import '../styles/Workspace.css';
 
 export default function Workspace() {
@@ -9,8 +12,10 @@ export default function Workspace() {
   const navigate = useNavigate();
   const emit = useSocketEmit();
   const store = useAppStore();
+  const { user } = useAuthStore();
 
   const [text, setText] = useState('');
+  const [toasts, setToasts] = useState<ToastNotification[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -23,12 +28,48 @@ export default function Workspace() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [store.messages]);
 
+  // Helper for Google Meet style toast notifications
+  const addToast = (toast: Omit<ToastNotification, 'id'>) => {
+    const id = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+    setToasts((prev) => [...prev, { ...toast, id }]);
+
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 4000);
+  };
+
+  const dismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
+
   // Socket events
   useSocketEvent('new_message', (msg: any) => store.addMessage(msg));
   useSocketEvent<{ remaining: number; total: number }>('timer_tick', (d) => store.setTimer(d.remaining, d.total));
-  useSocketEvent<{ participants: any[] }>('participant_joined', (d) => store.setParticipants(d.participants));
-  useSocketEvent<{ participants: any[] }>('participant_left', (d) => store.setParticipants(d.participants));
-  useSocketEvent('session_ended', (d: any) => {
+
+  useSocketEvent<{ participant: any; participants: any[] }>('participant_joined', (d) => {
+    store.setParticipants(d.participants);
+    if (d.participant && d.participant.id !== user?._id) {
+      addToast({
+        userName: d.participant.name,
+        userColor: d.participant.color,
+        type: 'join',
+        message: 'joined the session'
+      });
+    }
+  });
+
+  useSocketEvent<{ userId: string; userName: string; participants: any[] }>('participant_left', (d) => {
+    store.setParticipants(d.participants);
+    if (d.userId && d.userId !== user?._id && d.userName) {
+      addToast({
+        userName: d.userName,
+        type: 'leave',
+        message: 'left the session'
+      });
+    }
+  });
+
+  useSocketEvent('session_ended', () => {
     store.setRoomStatus('completed');
   });
 
@@ -49,6 +90,15 @@ export default function Workspace() {
     }
   };
 
+  const handleLeave = () => {
+    if (confirm('Leave the session? You can\'t rejoin.')) {
+      emit('leave_room', null, () => {
+        store.reset();
+        navigate('/');
+      });
+    }
+  };
+
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
     const sec = s % 60;
@@ -63,6 +113,9 @@ export default function Workspace() {
 
   return (
     <div className="workspace-page">
+      {/* Google Meet style Toast Notifications */}
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+
       {/* Top Bar */}
       <header className="workspace-header">
         <div className="header-left">
@@ -88,6 +141,9 @@ export default function Workspace() {
           {isHost && !isCompleted && (
             <button className="end-btn" onClick={handleEnd}>End Session</button>
           )}
+          {!isHost && !isCompleted && (
+            <button className="leave-btn" onClick={handleLeave}>Leave</button>
+          )}
         </div>
       </header>
 
@@ -108,7 +164,7 @@ export default function Workspace() {
               </div>
             )}
             {store.messages.map((msg) => {
-              const isMe = msg.userId === store.myParticipant?.id;
+              const isMe = msg.userId === user?._id;
               return (
                 <div key={msg.id} className={`message ${isMe ? 'message-mine' : ''}`}>
                   {!isMe && (
