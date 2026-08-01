@@ -24,7 +24,14 @@ export interface RoomSettings {
   maxParticipants: number;
 }
 
+export interface PendingKnock {
+  userId: string;
+  userName: string;
+  userColor: string;
+}
+
 type RoomStatus = 'idle' | 'waiting' | 'active' | 'completed';
+type ActiveTab = 'whiteboard' | 'code';
 
 interface AppState {
   // User
@@ -62,6 +69,27 @@ interface AppState {
   timerTotal: number;
   setTimer: (remaining: number, total: number) => void;
 
+  // Workspace tabs (Phase 3)
+  activeTab: ActiveTab;
+  setActiveTab: (tab: ActiveTab) => void;
+
+  // Problem display (Phase 3)
+  problemText: string;
+  setProblemText: (text: string) => void;
+
+  // Code language sync (Phase 3)
+  codeLanguage: string;
+  setCodeLanguage: (language: string) => void;
+
+  // Host admission queue (Phase 3)
+  pendingKnocks: PendingKnock[];
+  addPendingKnock: (knock: PendingKnock) => void;
+  removePendingKnock: (userId: string) => void;
+  clearPendingKnocks: () => void;
+
+  // Host transfer (Phase 3)
+  updateHost: (newHostId: string, newHostName: string) => void;
+
   // Reset
   reset: () => void;
 }
@@ -77,6 +105,10 @@ const initialState = {
   messages: [],
   timerRemaining: 0,
   timerTotal: 0,
+  activeTab: 'whiteboard' as ActiveTab,
+  problemText: '',
+  codeLanguage: 'javascript',
+  pendingKnocks: [] as PendingKnock[],
 };
 
 export const useAppStore = create<AppState>((set) => ({
@@ -118,6 +150,42 @@ export const useAppStore = create<AppState>((set) => ({
 
   setTimer: (remaining, total) =>
     set({ timerRemaining: remaining, timerTotal: total }),
+
+  // Phase 3 additions
+  setActiveTab: (tab) => set({ activeTab: tab }),
+
+  setProblemText: (text) => set({ problemText: text }),
+
+  setCodeLanguage: (language) => set({ codeLanguage: language }),
+
+  addPendingKnock: (knock) =>
+    set((state) => ({
+      pendingKnocks: state.pendingKnocks.some((k) => k.userId === knock.userId)
+        ? state.pendingKnocks
+        : [...state.pendingKnocks, knock],
+    })),
+
+  removePendingKnock: (userId) =>
+    set((state) => ({
+      pendingKnocks: state.pendingKnocks.filter((k) => k.userId !== userId),
+    })),
+
+  clearPendingKnocks: () => set({ pendingKnocks: [] }),
+
+  updateHost: (newHostId, newHostName) =>
+    set((state) => ({
+      hostName: newHostName,
+      myParticipant: state.myParticipant
+        ? {
+            ...state.myParticipant,
+            isHost: state.myParticipant.id === newHostId,
+          }
+        : null,
+      participants: state.participants.map((p) => ({
+        ...p,
+        isHost: p.id === newHostId,
+      })),
+    })),
 
   reset: () => set(initialState),
 }));

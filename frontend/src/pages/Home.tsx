@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSocketEmit } from '../hooks/useSocket';
+import { useSocketEmit, useSocketEvent } from '../hooks/useSocket';
 import { useAppStore } from '../store/useAppStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { disconnectSocket } from '../hooks/useSocket';
@@ -16,6 +16,8 @@ export default function Home() {
   const [maxParticipants, setMaxParticipants] = useState(5);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [knockPending, setKnockPending] = useState(false);
+  const [knockMessage, setKnockMessage] = useState('');
 
   const { setUserName, setRoom, setParticipants } = useAppStore();
   const { user, logout } = useAuthStore();
@@ -55,9 +57,17 @@ export default function Home() {
     setLoading(true);
 
     emit('join_room', { roomCode: roomCode.trim() },
-      (res: { success?: boolean; room?: any; participant?: any; error?: string }) => {
+      (res: { success?: boolean; pending?: boolean; message?: string; room?: any; participant?: any; error?: string }) => {
         setLoading(false);
         if (res.error) return setError(res.error);
+
+        // Knock-to-rejoin: waiting for host admission
+        if (res.pending) {
+          setKnockPending(true);
+          setKnockMessage(res.message || 'Waiting for host to admit you...');
+          return;
+        }
+
         if (res.success && res.room) {
           setUserName(user?.name || '');
           setRoom({
@@ -67,10 +77,57 @@ export default function Home() {
             myParticipant: res.participant,
           });
           setParticipants(res.room.participants);
-          navigate(`/lobby/${res.room.roomCode}`);
+
+          // If session is active (rejoining), go directly to workspace with state sync
+          if (res.room.status === 'active') {
+            const { setMessages, setTimer, setRoomStatus, setProblemText, setCodeLanguage } = useAppStore.getState();
+            setRoomStatus('active');
+            setMessages(res.room.messages || []);
+            setTimer(res.room.timerRemaining || 0, res.room.timerTotal || 0);
+            setProblemText(res.room.problemText || '');
+            setCodeLanguage(res.room.codeLanguage || 'javascript');
+            navigate(`/workspace/${res.room.roomCode}`);
+          } else {
+            navigate(`/lobby/${res.room.roomCode}`);
+          }
         }
       }
     );
+  };
+
+  // Listen for knock accepted — host admitted us
+  useSocketEvent<any>('knock_accepted', (d) => {
+    setKnockPending(false);
+    setKnockMessage('');
+
+    const { setMessages, setTimer, setRoomStatus, setProblemText, setCodeLanguage } = useAppStore.getState();
+
+    setUserName(user?.name || '');
+    setRoom({
+      roomCode: d.roomCode,
+      hostName: d.room.hostName,
+      settings: d.room.settings,
+      myParticipant: d.participant,
+    });
+    setParticipants(d.room.participants);
+    setRoomStatus('active');
+    setMessages(d.room.messages || []);
+    setTimer(d.room.timerRemaining || 0, d.room.timerTotal || 0);
+    setProblemText(d.room.problemText || '');
+    setCodeLanguage(d.room.codeLanguage || 'javascript');
+    navigate(`/workspace/${d.roomCode}`);
+  });
+
+  // Listen for knock denied
+  useSocketEvent<{ message: string }>('knock_denied', (d) => {
+    setKnockPending(false);
+    setKnockMessage('');
+    setError(d.message || 'Host denied your rejoin request.');
+  });
+
+  const handleCancelKnock = () => {
+    setKnockPending(false);
+    setKnockMessage('');
   };
 
   return (
@@ -246,6 +303,22 @@ export default function Home() {
             >
               {loading ? 'Joining...' : 'Join Room'}
             </button>
+          </div>
+        )}
+
+        {/* Knock Pending Modal */}
+        {knockPending && (
+          <div className="knock-pending-overlay">
+            <div className="knock-pending-modal">
+              <div className="knock-pending-spinner">
+                <div className="spinner-ring" />
+              </div>
+              <h3>Requesting to Rejoin</h3>
+              <p>{knockMessage}</p>
+              <button className="cancel-knock-btn" onClick={handleCancelKnock}>
+                Cancel
+              </button>
+            </div>
           </div>
         )}
       </div>

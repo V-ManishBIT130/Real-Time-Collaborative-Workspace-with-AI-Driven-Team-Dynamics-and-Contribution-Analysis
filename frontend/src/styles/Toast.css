@@ -87,6 +87,11 @@
   color: #dc2626;
 }
 
+.gmeet-toast-knock .gmeet-toast-action {
+  color: #d97706;
+  font-weight: 500;
+}
+
 .gmeet-toast-close {
   background: none;
   border: none;

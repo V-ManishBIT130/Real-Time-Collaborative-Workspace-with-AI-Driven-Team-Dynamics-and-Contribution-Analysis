@@ -16,12 +16,17 @@ export default function Lobby() {
 
   useSocketEvent<{ participants: any[] }>('participant_joined', (d) => store.setParticipants(d.participants));
   useSocketEvent<{ participants: any[] }>('participant_left', (d) => store.setParticipants(d.participants));
-  useSocketEvent<{ timerRemaining: number; timerDuration: number }>('session_started', (d) => {
+  useSocketEvent<{ timerRemaining: number; timerDuration: number; problemText?: string }>('session_started', (d) => {
     store.setRoomStatus('active');
     store.setTimer(d.timerRemaining, d.timerDuration * 60);
+    if (d.problemText) store.setProblemText(d.problemText);
     navigate(`/workspace/${roomCode}`);
   });
   useSocketEvent<{ reason: string }>('room_closed', () => { alert('Room closed.'); store.reset(); navigate('/'); });
+  useSocketEvent<{ newHostId: string; newHostName: string; participants: any[] }>('host_transferred', (d) => {
+    store.updateHost(d.newHostId, d.newHostName);
+    store.setParticipants(d.participants);
+  });
 
   const isHost = store.myParticipant?.isHost === true;
   const canStart = isHost && store.participants.length >= 2;

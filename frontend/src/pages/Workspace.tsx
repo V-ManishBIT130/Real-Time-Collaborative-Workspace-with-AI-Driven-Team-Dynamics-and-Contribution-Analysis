@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSocketEvent, useSocketEmit } from '../hooks/useSocket';
 import { useAppStore } from '../store/useAppStore';
 import { useAuthStore } from '../store/useAuthStore';
+import WhiteboardPanel from '../components/WhiteboardPanel';
+import CodeEditorPanel from '../components/CodeEditorPanel';
 import ToastContainer from '../components/ToastContainer';
 import type { ToastNotification } from '../types/toast';
 import '../styles/Workspace.css';
@@ -16,6 +18,9 @@ export default function Workspace() {
 
   const [text, setText] = useState('');
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
+  const [isProblemExpanded, setIsProblemExpanded] = useState(true);
+  const [whiteboardElements, setWhiteboardElements] = useState<any[]>([]);
+  const [codeContent, setCodeContent] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -23,16 +28,30 @@ export default function Workspace() {
     if (!store.roomCode || store.roomCode !== roomCode) navigate('/');
   }, [store.roomCode, roomCode, navigate]);
 
+  // beforeunload — warn before closing tab during active session
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (store.roomStatus === 'active') {
+        e.preventDefault();
+        e.returnValue = 'You are in an active session. Are you sure you want to leave?';
+        return e.returnValue;
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [store.roomStatus]);
+
   // Auto-scroll on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [store.messages]);
 
-  // Helper for Google Meet style toast notifications
+  // ─────────────────────────────────────
+  // Toast helper (Google Meet style)
+  // ─────────────────────────────────────
   const addToast = (toast: Omit<ToastNotification, 'id'>) => {
     const id = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
     setToasts((prev) => [...prev, { ...toast, id }]);
-
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
@@ -42,7 +61,9 @@ export default function Workspace() {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Socket events
+  // ─────────────────────────────────────
+  // Socket Events
+  // ─────────────────────────────────────
   useSocketEvent('new_message', (msg: any) => store.addMessage(msg));
   useSocketEvent<{ remaining: number; total: number }>('timer_tick', (d) => store.setTimer(d.remaining, d.total));
 
@@ -58,13 +79,16 @@ export default function Workspace() {
     }
   });
 
-  useSocketEvent<{ userId: string; userName: string; participants: any[] }>('participant_left', (d) => {
+  useSocketEvent<{ userId: string; userName: string; reason?: string; participants: any[] }>('participant_left', (d) => {
     store.setParticipants(d.participants);
     if (d.userId && d.userId !== user?._id && d.userName) {
+      const reason = d.reason === 'kicked' ? 'was removed from the session' :
+                     d.reason === 'disconnected' ? 'lost connection' :
+                     'left the session';
       addToast({
         userName: d.userName,
         type: 'leave',
-        message: 'left the session'
+        message: reason
       });
     }
   });
@@ -73,6 +97,63 @@ export default function Workspace() {
     store.setRoomStatus('completed');
   });
 
+  // Knock request — host sees admission toast
+  useSocketEvent<{ userId: string; userName: string; userColor: string }>('knock_request', (d) => {
+    store.addPendingKnock(d);
+    addToast({
+      userName: d.userName,
+      userColor: d.userColor,
+      type: 'knock' as any,
+      message: 'wants to rejoin'
+    });
+  });
+
+  // Host transfer
+  useSocketEvent<{ newHostId: string; newHostName: string; participants: any[] }>('host_transferred', (d) => {
+    store.updateHost(d.newHostId, d.newHostName);
+    store.setParticipants(d.participants);
+    if (d.newHostId === user?._id) {
+      addToast({
+        userName: 'You',
+        type: 'join',
+        message: 'are now the host'
+      });
+    } else {
+      addToast({
+        userName: d.newHostName,
+        type: 'join',
+        message: 'is now the host'
+      });
+    }
+  });
+
+  // Kicked
+  useSocketEvent<{ message: string }>('you_were_kicked', (d) => {
+    alert(d.message);
+    store.reset();
+    navigate('/');
+  });
+
+  // Reconnection — restore full state
+  useSocketEvent<any>('reconnected', (d) => {
+    store.setParticipants(d.participants);
+    store.setMessages(d.messages || []);
+    store.setTimer(d.timerRemaining || 0, d.timerTotal || 0);
+    store.setRoomStatus(d.status || 'active');
+    store.setProblemText(d.problemText || '');
+    store.setCodeLanguage(d.codeLanguage || 'javascript');
+    if (d.whiteboardElements) setWhiteboardElements(d.whiteboardElements);
+    if (d.codeContent) setCodeContent(d.codeContent);
+  });
+
+  // Problem text from session start
+  useSocketEvent<{ problemText?: string }>('session_started', (d) => {
+    if (d.problemText) store.setProblemText(d.problemText);
+  });
+
+  // ─────────────────────────────────────
+  // Handlers
+  // ─────────────────────────────────────
   const handleSend = () => {
     if (!text.trim()) return;
     emit('send_message', { text: text.trim() });
@@ -91,10 +172,32 @@ export default function Workspace() {
   };
 
   const handleLeave = () => {
-    if (confirm('Leave the session? You can\'t rejoin.')) {
+    if (confirm('Leave the session? You can request to rejoin later.')) {
       emit('leave_room', null, () => {
         store.reset();
         navigate('/');
+      });
+    }
+  };
+
+  const handleAdmit = (userId: string) => {
+    emit('admit_participant', { userId }, (r: any) => {
+      if (r?.error) alert(r.error);
+    });
+    store.removePendingKnock(userId);
+  };
+
+  const handleDeny = (userId: string) => {
+    emit('deny_participant', { userId }, (r: any) => {
+      if (r?.error) alert(r.error);
+    });
+    store.removePendingKnock(userId);
+  };
+
+  const handleKick = (userId: string, userName: string) => {
+    if (confirm(`Remove ${userName} from the session?`)) {
+      emit('kick_participant', { userId }, (r: any) => {
+        if (r?.error) alert(r.error);
       });
     }
   };
@@ -116,6 +219,33 @@ export default function Workspace() {
       {/* Google Meet style Toast Notifications */}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
+      {/* Pending Knock Admission Bar (Host only) */}
+      {isHost && store.pendingKnocks.length > 0 && (
+        <div className="knock-bar">
+          {store.pendingKnocks.map((knock) => (
+            <div key={knock.userId} className="knock-item">
+              <div className="knock-avatar" style={{ background: knock.userColor }}>
+                {knock.userName.charAt(0).toUpperCase()}
+              </div>
+              <span className="knock-name">{knock.userName}</span>
+              <span className="knock-label">wants to rejoin</span>
+              <button className="knock-accept" onClick={() => handleAdmit(knock.userId)}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Accept
+              </button>
+              <button className="knock-deny" onClick={() => handleDeny(knock.userId)}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+                Deny
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Top Bar */}
       <header className="workspace-header">
         <div className="header-left">
@@ -133,8 +263,17 @@ export default function Workspace() {
         <div className="header-right">
           <div className="participant-avatars">
             {store.participants.map((p) => (
-              <div key={p.id} className="mini-avatar" style={{ background: p.color }} title={p.name}>
+              <div
+                key={p.id}
+                className={`mini-avatar ${isHost && p.id !== user?._id ? 'kickable' : ''}`}
+                style={{ background: p.color }}
+                title={`${p.name}${p.isHost ? ' (Host)' : ''}`}
+                onClick={() => {
+                  if (isHost && p.id !== user?._id && !isCompleted) handleKick(p.id, p.name);
+                }}
+              >
                 {p.name.charAt(0).toUpperCase()}
+                {p.isHost && <span className="host-crown">👑</span>}
               </div>
             ))}
           </div>
@@ -174,7 +313,10 @@ export default function Workspace() {
                   )}
                   <div className="message-content">
                     {!isMe && <span className="message-author" style={{ color: msg.userColor }}>{msg.userName}</span>}
-                    <p className="message-text">{msg.text}</p>
+                    <p className="message-text">
+                      {msg.source === 'voice' && <span className="voice-badge">🎙</span>}
+                      {msg.text}
+                    </p>
                     <span className="message-time">
                       {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
@@ -208,27 +350,73 @@ export default function Workspace() {
           )}
         </aside>
 
-        {/* Main Area Placeholder */}
+        {/* Main Workspace Area */}
         <section className="main-area">
-          <div className="placeholder-content">
-            <div className="placeholder-icon">
-              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.3">
+          {/* Problem Display Banner */}
+          {store.problemText && (
+            <div className={`problem-banner ${isProblemExpanded ? 'expanded' : 'collapsed'}`}>
+              <button className="problem-toggle" onClick={() => setIsProblemExpanded(!isProblemExpanded)}>
+                <span className="problem-icon">📋</span>
+                <span className="problem-title">Problem Statement</span>
+                <svg
+                  className={`chevron ${isProblemExpanded ? 'up' : 'down'}`}
+                  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              {isProblemExpanded && (
+                <div className="problem-body">
+                  <p>{store.problemText}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Tab Bar */}
+          <div className="workspace-tabs">
+            <button
+              className={`workspace-tab ${store.activeTab === 'whiteboard' ? 'active' : ''}`}
+              onClick={() => store.setActiveTab('whiteboard')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="3" width="18" height="18" rx="2" />
                 <path d="M3 9h18" /><path d="M9 21V9" />
               </svg>
+              Whiteboard
+            </button>
+            <button
+              className={`workspace-tab ${store.activeTab === 'code' ? 'active' : ''}`}
+              onClick={() => store.setActiveTab('code')}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
+              </svg>
+              Code Editor
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div className="workspace-tab-content">
+            <div className="tab-panel" style={{ display: store.activeTab === 'whiteboard' ? 'flex' : 'none' }}>
+              <WhiteboardPanel
+                isReadOnly={isCompleted}
+                initialElements={whiteboardElements}
+              />
             </div>
-            <h2>Workspace Area</h2>
-            <p>Whiteboard & Code Editor will be added in Phase 3</p>
-            <div className="phase-badges">
-              <span className="badge active">Phase 2: Real-time Chat ✅</span>
-              <span className="badge upcoming">Phase 3: Whiteboard</span>
-              <span className="badge upcoming">Phase 3: Code Editor</span>
+            <div className="tab-panel" style={{ display: store.activeTab === 'code' ? 'flex' : 'none' }}>
+              <CodeEditorPanel
+                isReadOnly={isCompleted}
+                initialContent={codeContent}
+                initialLanguage={store.codeLanguage}
+              />
             </div>
           </div>
 
+          {/* Session Summary (shown when completed) */}
           {isCompleted && (
             <div className="session-summary">
-              <h3>📊 Session Summary</h3>
+              <h3>📊 Session Complete</h3>
               <div className="summary-stats">
                 <div className="stat"><span className="stat-value">{store.messages.length}</span><span className="stat-label">Messages</span></div>
                 <div className="stat"><span className="stat-value">{store.participants.length}</span><span className="stat-label">Participants</span></div>
