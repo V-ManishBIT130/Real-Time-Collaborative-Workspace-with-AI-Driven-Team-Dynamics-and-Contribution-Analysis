@@ -1,10 +1,12 @@
-import { useRef, useCallback } from 'react';
+import React, { useRef, useCallback } from 'react';
 import Editor from '@monaco-editor/react';
 import { useSocketEvent, useSocketEmit } from '../hooks/useSocket';
 import { useAppStore } from '../store/useAppStore';
 import { useAuthStore } from '../store/useAuthStore';
 
 const LANGUAGES = [
+  { value: 'markdown', label: 'Markdown' },
+  { value: 'plaintext', label: 'Plain Text' },
   { value: 'javascript', label: 'JavaScript' },
   { value: 'python', label: 'Python' },
   { value: 'typescript', label: 'TypeScript' },
@@ -20,7 +22,7 @@ interface CodeEditorPanelProps {
   initialLanguage?: string;
 }
 
-export default function CodeEditorPanel({ isReadOnly, initialContent, initialLanguage }: CodeEditorPanelProps) {
+function CodeEditorPanelComponent({ isReadOnly, initialContent, initialLanguage }: CodeEditorPanelProps) {
   const emit = useSocketEmit();
   const { user } = useAuthStore();
   const { codeLanguage, setCodeLanguage } = useAppStore();
@@ -116,7 +118,7 @@ export default function CodeEditorPanel({ isReadOnly, initialContent, initialLan
         <Editor
           height="100%"
           language={activeLanguage}
-          defaultValue={initialContent || '// Start collaborating on code here...\n'}
+          defaultValue={initialContent || '# Notes\n\nStart writing your ideas and notes here...\n'}
           theme="vs-dark"
           onChange={handleChange}
           onMount={handleEditorMount}
@@ -141,3 +143,6 @@ export default function CodeEditorPanel({ isReadOnly, initialContent, initialLan
     </div>
   );
 }
+
+export default React.memo(CodeEditorPanelComponent);
+

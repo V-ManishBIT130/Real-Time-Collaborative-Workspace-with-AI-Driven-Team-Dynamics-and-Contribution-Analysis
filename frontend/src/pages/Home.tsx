@@ -12,6 +12,7 @@ export default function Home() {
 
   const [mode, setMode] = useState<'select' | 'create' | 'join'>('select');
   const [roomCode, setRoomCode] = useState('');
+  const [topic, setTopic] = useState('');
   const [timerDuration, setTimerDuration] = useState(15);
   const [maxParticipants, setMaxParticipants] = useState(5);
   const [error, setError] = useState('');
@@ -19,7 +20,7 @@ export default function Home() {
   const [knockPending, setKnockPending] = useState(false);
   const [knockMessage, setKnockMessage] = useState('');
 
-  const { setUserName, setRoom, setParticipants } = useAppStore();
+  const { setUserName, setRoom, setParticipants, setSessionTopic } = useAppStore();
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
@@ -32,12 +33,13 @@ export default function Home() {
     setError('');
     setLoading(true);
 
-    emit('create_room', { timerDuration, maxParticipants },
+    emit('create_room', { timerDuration, maxParticipants, topic: topic.trim() },
       (res: { success?: boolean; roomCode?: string; participant?: any; error?: string }) => {
         setLoading(false);
         if (res.error) return setError(res.error);
         if (res.success && res.roomCode && res.participant) {
           setUserName(user?.name || '');
+          setSessionTopic(topic.trim());
           setRoom({
             roomCode: res.roomCode,
             hostName: user?.name || '',
@@ -70,6 +72,7 @@ export default function Home() {
 
         if (res.success && res.room) {
           setUserName(user?.name || '');
+          setSessionTopic(res.room.topic || '');
           setRoom({
             roomCode: res.room.roomCode,
             hostName: res.room.hostName,
@@ -80,12 +83,13 @@ export default function Home() {
 
           // If session is active (rejoining), go directly to workspace with state sync
           if (res.room.status === 'active') {
-            const { setMessages, setTimer, setRoomStatus, setProblemText, setCodeLanguage } = useAppStore.getState();
+            const { setMessages, setTimer, setRoomStatus, setProblemText, setCodeLanguage, setSessionTopic } = useAppStore.getState();
             setRoomStatus('active');
             setMessages(res.room.messages || []);
             setTimer(res.room.timerRemaining || 0, res.room.timerTotal || 0);
             setProblemText(res.room.problemText || '');
-            setCodeLanguage(res.room.codeLanguage || 'javascript');
+            setCodeLanguage(res.room.codeLanguage || 'markdown');
+            setSessionTopic(res.room.topic || '');
             navigate(`/workspace/${res.room.roomCode}`);
           } else {
             navigate(`/lobby/${res.room.roomCode}`);
@@ -100,9 +104,10 @@ export default function Home() {
     setKnockPending(false);
     setKnockMessage('');
 
-    const { setMessages, setTimer, setRoomStatus, setProblemText, setCodeLanguage } = useAppStore.getState();
+    const { setMessages, setTimer, setRoomStatus, setProblemText, setCodeLanguage, setSessionTopic } = useAppStore.getState();
 
     setUserName(user?.name || '');
+    setSessionTopic(d.room?.topic || '');
     setRoom({
       roomCode: d.roomCode,
       hostName: d.room.hostName,
@@ -114,7 +119,7 @@ export default function Home() {
     setMessages(d.room.messages || []);
     setTimer(d.room.timerRemaining || 0, d.room.timerTotal || 0);
     setProblemText(d.room.problemText || '');
-    setCodeLanguage(d.room.codeLanguage || 'javascript');
+    setCodeLanguage(d.room.codeLanguage || 'markdown');
     navigate(`/workspace/${d.roomCode}`);
   });
 
@@ -224,6 +229,19 @@ export default function Home() {
                 </div>
                 {user?.name}
               </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="session-topic">Discussion Topic / Goal</label>
+              <input
+                id="session-topic"
+                type="text"
+                className="room-input"
+                placeholder="e.g. Design a URL shortener system, Plan sprint goals..."
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                maxLength={150}
+              />
             </div>
 
             <div className="form-row">

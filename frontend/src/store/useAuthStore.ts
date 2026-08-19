@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
-  || `http://${window.location.hostname}:3001`;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL !== undefined
+  ? import.meta.env.VITE_BACKEND_URL
+  : (window.location.protocol === 'https:' ? '' : `http://${window.location.hostname}:3001`);
 
 export interface AuthUser {
   _id: string;

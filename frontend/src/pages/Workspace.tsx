@@ -1,10 +1,13 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSocketEvent, useSocketEmit } from '../hooks/useSocket';
 import { useAppStore } from '../store/useAppStore';
 import { useAuthStore } from '../store/useAuthStore';
+import { useVoiceRecognition } from '../hooks/useVoiceRecognition';
+import { useWebRTC } from '../hooks/useWebRTC';
 import WhiteboardPanel from '../components/WhiteboardPanel';
 import CodeEditorPanel from '../components/CodeEditorPanel';
+import VideoOverlay from '../components/VideoOverlay';
 import ToastContainer from '../components/ToastContainer';
 import type { ToastNotification } from '../types/toast';
 import '../styles/Workspace.css';
@@ -21,8 +24,67 @@ export default function Workspace() {
   const [isProblemExpanded, setIsProblemExpanded] = useState(true);
   const [whiteboardElements, setWhiteboardElements] = useState<any[]>([]);
   const [codeContent, setCodeContent] = useState('');
+
+  // ML Analysis State
+  const [analysisStatus, setAnalysisStatus] = useState<'idle' | 'analyzing' | 'ready' | 'error' | 'skipped'>('idle');
+  const [analysisProgressMsg, setAnalysisProgressMsg] = useState('');
+  const [reportSessionId, setReportSessionId] = useState<string | null>(null);
+  const [reportScore, setReportScore] = useState<number | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const voiceBarRef = useRef<HTMLDivElement>(null);
+
+  // Voice speech-to-text hook
+  const {
+    isListening,
+    isSupported: isVoiceSupported,
+    interimTranscript: voiceInterim,
+    error: voiceError,
+    toggleListening: rawToggleListening,
+    stopListening
+  } = useVoiceRecognition({
+    onResult: (spokenText, isFinal) => {
+      if (isFinal && spokenText.trim()) {
+        // Auto-send finalized voice transcript as a voice message
+        emit('send_message', { text: spokenText.trim(), source: 'voice' });
+      }
+    },
+    onError: (err) => {
+      addToast({
+        userName: 'Microphone',
+        type: 'leave',
+        message: err === 'not-allowed'
+          ? 'Microphone permission denied'
+          : err === 'network'
+            ? 'Speech service unavailable — check internet'
+            : `Voice recognition error`
+      });
+    }
+  });
+
+  // WebRTC video/audio hook
+  const webrtc = useWebRTC({
+    roomCode,
+    userId: user?._id,
+    userName: user?.name,
+    participants: store.participants,
+    isActive: store.roomStatus === 'active',
+  });
+
+  // ── Mic-sharing coordination ──
+  // When voice transcription starts, mute WebRTC mic temporarily.
+  // When voice transcription stops, unmute WebRTC mic.
+  const toggleListening = useCallback(() => {
+    if (!isListening) {
+      // About to start transcription → mute WebRTC mic
+      if (webrtc.isConnected) webrtc.setMicMuted(true);
+    } else {
+      // Stopping transcription → unmute WebRTC mic
+      if (webrtc.isConnected) webrtc.setMicMuted(false);
+    }
+    rawToggleListening();
+  }, [isListening, webrtc, rawToggleListening]);
 
   useEffect(() => {
     if (!store.roomCode || store.roomCode !== roomCode) navigate('/');
@@ -45,6 +107,13 @@ export default function Workspace() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [store.messages]);
+
+  // Auto-scroll voice indicator bar when interim transcript grows
+  useEffect(() => {
+    if (voiceBarRef.current) {
+      voiceBarRef.current.scrollTop = voiceBarRef.current.scrollHeight;
+    }
+  }, [voiceInterim]);
 
   // ─────────────────────────────────────
   // Toast helper (Google Meet style)
@@ -93,8 +162,44 @@ export default function Workspace() {
     }
   });
 
+  // ── Session & Analysis Events ──
   useSocketEvent('session_ended', () => {
     store.setRoomStatus('completed');
+    if (isListening) stopListening();
+  });
+
+  useSocketEvent<{ message: string; sessionId?: string }>('analysis_started', (d) => {
+    setAnalysisStatus('analyzing');
+    setAnalysisProgressMsg(d.message || 'Analyzing session dynamics...');
+    if (d.sessionId) setReportSessionId(d.sessionId);
+  });
+
+  useSocketEvent<{ message: string; attempt: number; maxRetries: number }>('analysis_progress', (d) => {
+    setAnalysisStatus('analyzing');
+    setAnalysisProgressMsg(d.message);
+  });
+
+  useSocketEvent<{ sessionId: string; overallScore?: number; analysisTime?: number }>('report_ready', (d) => {
+    setAnalysisStatus('ready');
+    setReportSessionId(d.sessionId);
+    if (d.overallScore !== undefined) setReportScore(d.overallScore);
+    addToast({
+      userName: 'AI Engine',
+      type: 'join',
+      message: 'Intelligence Report is ready!'
+    });
+  });
+
+  useSocketEvent<{ message: string; sessionId?: string; canRetry?: boolean }>('analysis_error', (d) => {
+    setAnalysisStatus('error');
+    setAnalysisProgressMsg(d.message || 'Analysis encountered an issue.');
+    if (d.sessionId) setReportSessionId(d.sessionId);
+  });
+
+  useSocketEvent<{ message: string; sessionId?: string }>('analysis_skipped', (d) => {
+    setAnalysisStatus('skipped');
+    setAnalysisProgressMsg(d.message);
+    if (d.sessionId) setReportSessionId(d.sessionId);
   });
 
   // Knock request — host sees admission toast
@@ -141,14 +246,16 @@ export default function Workspace() {
     store.setTimer(d.timerRemaining || 0, d.timerTotal || 0);
     store.setRoomStatus(d.status || 'active');
     store.setProblemText(d.problemText || '');
-    store.setCodeLanguage(d.codeLanguage || 'javascript');
+    store.setCodeLanguage(d.codeLanguage || 'markdown');
+    if (d.topic) store.setSessionTopic(d.topic);
     if (d.whiteboardElements) setWhiteboardElements(d.whiteboardElements);
     if (d.codeContent) setCodeContent(d.codeContent);
   });
 
-  // Problem text from session start
-  useSocketEvent<{ problemText?: string }>('session_started', (d) => {
+  // Problem text & topic from session start
+  useSocketEvent<{ problemText?: string; topic?: string }>('session_started', (d) => {
     if (d.problemText) store.setProblemText(d.problemText);
+    if (d.topic) store.setSessionTopic(d.topic);
   });
 
   // ─────────────────────────────────────
@@ -156,7 +263,8 @@ export default function Workspace() {
   // ─────────────────────────────────────
   const handleSend = () => {
     if (!text.trim()) return;
-    emit('send_message', { text: text.trim() });
+    // Voice messages auto-send via onResult — this handles typed messages only
+    emit('send_message', { text: text.trim(), source: 'text' });
     setText('');
     inputRef.current?.focus();
   };
@@ -219,6 +327,21 @@ export default function Workspace() {
       {/* Google Meet style Toast Notifications */}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
+      {/* WebRTC Video Overlay (floating cameras) */}
+      <VideoOverlay
+        localStream={webrtc.localStream}
+        remoteStreams={webrtc.remoteStreams}
+        isCameraOn={webrtc.isCameraOn}
+        isMicOn={webrtc.isMicOn}
+        isConnected={webrtc.isConnected}
+        userName={user?.name || 'You'}
+        userColor={store.myParticipant?.color || '#6366f1'}
+        onToggleCamera={webrtc.toggleCamera}
+        onToggleMic={webrtc.toggleMic}
+        onLeaveCall={webrtc.leaveCall}
+        participants={store.participants}
+      />
+
       {/* Pending Knock Admission Bar (Host only) */}
       {isHost && store.pendingKnocks.length > 0 && (
         <div className="knock-bar">
@@ -251,6 +374,11 @@ export default function Workspace() {
         <div className="header-left">
           <span className="ws-logo">CollabLens</span>
           <span className="ws-room-code">{roomCode}</span>
+          {store.sessionTopic && (
+            <span className="ws-topic-badge" title={`Topic: ${store.sessionTopic}`}>
+              🎯 {store.sessionTopic}
+            </span>
+          )}
         </div>
         <div className="header-center">
           <div className={`timer-display ${store.timerRemaining <= 30 ? 'timer-danger' : store.timerRemaining <= 60 ? 'timer-warning' : ''}`}>
@@ -261,6 +389,69 @@ export default function Workspace() {
           </div>
         </div>
         <div className="header-right">
+          {/* WebRTC Video Call Controls */}
+          {!isCompleted && (
+            <div className="video-call-controls" style={{ display: 'flex', gap: '4px', marginRight: '8px' }}>
+              {!webrtc.isConnected ? (
+                <button
+                  className="mic-btn"
+                  onClick={() => {
+                    if (!navigator.mediaDevices?.getUserMedia) {
+                      addToast({
+                        userName: 'Camera',
+                        type: 'leave',
+                        message: 'Video calls require HTTPS. Use localhost or enable HTTPS for cross-device calls.'
+                      });
+                      return;
+                    }
+                    webrtc.joinCall();
+                  }}
+                  title="Join video call"
+                  style={{ background: 'rgba(99, 102, 241, 0.1)', color: '#818cf8', borderColor: 'rgba(99, 102, 241, 0.3)' }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M23 7l-7 5 7 5V7z" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                  </svg>
+                </button>
+              ) : (
+                <>
+                  <button
+                    className={`mic-btn ${!webrtc.isCameraOn ? 'active' : ''}`}
+                    onClick={webrtc.toggleCamera}
+                    title={webrtc.isCameraOn ? 'Turn off camera' : 'Turn on camera'}
+                    style={{
+                      background: webrtc.isCameraOn ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                      color: webrtc.isCameraOn ? '#10b981' : '#ef4444',
+                      borderColor: webrtc.isCameraOn ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)',
+                      animation: 'none',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M23 7l-7 5 7 5V7z" />
+                      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                    </svg>
+                  </button>
+                  <button
+                    className={`mic-btn ${!webrtc.isMicOn ? 'active' : ''}`}
+                    onClick={webrtc.toggleMic}
+                    title={webrtc.isMicOn ? 'Mute call audio' : 'Unmute call audio'}
+                    style={{
+                      background: webrtc.isMicOn ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                      color: webrtc.isMicOn ? '#10b981' : '#ef4444',
+                      borderColor: webrtc.isMicOn ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)',
+                      animation: 'none',
+                    }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    </svg>
+                  </button>
+                </>
+              )}
+            </div>
+          )}
           <div className="participant-avatars">
             {store.participants.map((p) => (
               <div
@@ -328,22 +519,54 @@ export default function Workspace() {
           </div>
 
           {!isCompleted ? (
-            <div className="chat-input-area">
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder="Type a message..."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyDown={handleKeyDown}
-                maxLength={500}
-                autoFocus
-              />
-              <button className="send-btn" onClick={handleSend} disabled={!text.trim()}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
-                </svg>
-              </button>
+            <div className="chat-input-wrapper">
+              {isListening && (
+                <div className="voice-indicator-bar" ref={voiceBarRef}>
+                  <div className="voice-live-dot" />
+                  <span>
+                    {voiceInterim
+                      ? voiceInterim
+                      : 'Listening… Speak now'}
+                  </span>
+                </div>
+              )}
+              {!isListening && voiceError && (
+                <div className="voice-indicator-bar" style={{ background: 'rgba(239, 68, 68, 0.12)', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
+                  <span style={{ color: '#ef4444', fontSize: '0.78rem' }}>⚠ {voiceError}</span>
+                </div>
+              )}
+              <div className="chat-input-area">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder={isListening ? 'Listening to speech...' : 'Type a message...'}
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  maxLength={500}
+                  autoFocus
+                />
+                {isVoiceSupported && (
+                  <button
+                    type="button"
+                    className={`mic-btn ${isListening ? 'active' : ''}`}
+                    onClick={toggleListening}
+                    title={isListening ? 'Stop voice recording' : 'Speak message (Speech-to-Text)'}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                      <line x1="12" y1="19" x2="12" y2="23" />
+                      <line x1="8" y1="23" x2="16" y2="23" />
+                    </svg>
+                  </button>
+                )}
+                <button className="send-btn" onClick={() => handleSend()} disabled={!text.trim()}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                </button>
+              </div>
             </div>
           ) : (
             <div className="chat-ended">Session has ended. Messages are read-only.</div>
@@ -413,16 +636,88 @@ export default function Workspace() {
             </div>
           </div>
 
-          {/* Session Summary (shown when completed) */}
+          {/* Session Summary & Report CTA (shown when completed) */}
           {isCompleted && (
             <div className="session-summary">
               <h3>📊 Session Complete</h3>
+              {store.sessionTopic && (
+                <p style={{ color: '#818cf8', fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px' }}>
+                  🎯 {store.sessionTopic}
+                </p>
+              )}
               <div className="summary-stats">
                 <div className="stat"><span className="stat-value">{store.messages.length}</span><span className="stat-label">Messages</span></div>
                 <div className="stat"><span className="stat-value">{store.participants.length}</span><span className="stat-label">Participants</span></div>
                 <div className="stat"><span className="stat-value">{store.settings.timerDuration}m</span><span className="stat-label">Duration</span></div>
+                {reportScore !== null && (
+                  <div className="stat"><span className="stat-value" style={{ color: '#10b981' }}>{Math.round(reportScore * 100)}%</span><span className="stat-label">Team IQ</span></div>
+                )}
               </div>
-              <button className="primary-btn" onClick={() => { store.reset(); navigate('/'); }}>Back to Home</button>
+
+              {/* Analysis Status Banner */}
+              {analysisStatus === 'analyzing' && (
+                <div style={{
+                  background: 'rgba(99, 102, 241, 0.1)',
+                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  margin: '12px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  justifyContent: 'center',
+                  fontSize: '0.88rem',
+                  color: '#818cf8'
+                }}>
+                  <div className="pulse-dot" style={{ background: '#818cf8' }} />
+                  <span>{analysisProgressMsg || '🔬 AI Engine is analyzing team dynamics & contribution quality...'}</span>
+                </div>
+              )}
+
+              {analysisStatus === 'ready' && reportSessionId && (
+                <div style={{ margin: '14px 0' }}>
+                  <button
+                    className="primary-btn"
+                    style={{
+                      background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                      padding: '12px 24px',
+                      fontSize: '1rem',
+                      fontWeight: 700,
+                      boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => navigate(`/report/${reportSessionId}`)}
+                  >
+                    🎉 View Team Intelligence Report
+                  </button>
+                </div>
+              )}
+
+              {analysisStatus === 'error' && (
+                <div style={{
+                  background: '#fee2e2',
+                  border: '1px solid #fecaca',
+                  borderRadius: '8px',
+                  padding: '10px',
+                  margin: '10px 0',
+                  color: '#dc2626',
+                  fontSize: '0.85rem'
+                }}>
+                  <p>{analysisProgressMsg || 'Analysis could not be completed.'}</p>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '12px' }}>
+                {reportSessionId && analysisStatus !== 'ready' && (
+                  <button
+                    className="secondary-btn"
+                    onClick={() => navigate(`/report/${reportSessionId}`)}
+                  >
+                    Check Report
+                  </button>
+                )}
+                <button className="primary-btn" onClick={() => { store.reset(); navigate('/'); }}>Back to Home</button>
+              </div>
             </div>
           )}
         </section>

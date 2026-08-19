@@ -1,0 +1,15 @@
+{
+  "venvPath": "ml-service",
+  "venv": "venv",
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "basic",
+  "reportUnnecessaryCast": "none",
+  "reportUnnecessaryComparison": "none",
+  "executionEnvironments": [
+    {
+      "root": "ml-service",
+      "pythonVersion": "3.11",
+      "extraPaths": ["ml-service", "ml-service/modules"]
+    }
+  ]
+}

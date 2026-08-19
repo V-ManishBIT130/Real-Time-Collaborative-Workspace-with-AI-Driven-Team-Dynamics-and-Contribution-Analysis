@@ -1,5 +1,6 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
-  || `http://${window.location.hostname}:3001`;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL !== undefined
+  ? import.meta.env.VITE_BACKEND_URL
+  : (window.location.protocol === 'https:' ? '' : `http://${window.location.hostname}:3001`);
 
 /**
  * Fetch wrapper that auto-attaches JWT token to all requests.

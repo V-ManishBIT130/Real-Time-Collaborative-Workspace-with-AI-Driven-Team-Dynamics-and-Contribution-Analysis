@@ -16,10 +16,11 @@ export default function Lobby() {
 
   useSocketEvent<{ participants: any[] }>('participant_joined', (d) => store.setParticipants(d.participants));
   useSocketEvent<{ participants: any[] }>('participant_left', (d) => store.setParticipants(d.participants));
-  useSocketEvent<{ timerRemaining: number; timerDuration: number; problemText?: string }>('session_started', (d) => {
+  useSocketEvent<{ timerRemaining: number; timerDuration: number; problemText?: string; topic?: string }>('session_started', (d) => {
     store.setRoomStatus('active');
     store.setTimer(d.timerRemaining, d.timerDuration * 60);
     if (d.problemText) store.setProblemText(d.problemText);
+    if (d.topic) store.setSessionTopic(d.topic);
     navigate(`/workspace/${roomCode}`);
   });
   useSocketEvent<{ reason: string }>('room_closed', () => { alert('Room closed.'); store.reset(); navigate('/'); });
@@ -59,6 +60,22 @@ export default function Lobby() {
           </div>
           <p className="room-code-hint">Share this code with your team</p>
         </div>
+
+        {store.sessionTopic && (
+          <div className="topic-banner" style={{
+            background: 'rgba(99, 102, 241, 0.1)',
+            border: '1px solid rgba(99, 102, 241, 0.25)',
+            borderRadius: '10px',
+            padding: '10px 16px',
+            margin: '0 0 16px 0',
+            textAlign: 'center',
+            color: 'rgba(0, 0, 0, 1)',
+            fontSize: '0.95rem'
+          }}>
+            <span style={{ color: '#818cf8', fontWeight: 600, marginRight: '6px' }}>🎯 Topic:</span>
+            {store.sessionTopic}
+          </div>
+        )}
 
         <div className="session-info">
           <div className="info-chip">⏱ {store.settings.timerDuration} min</div>

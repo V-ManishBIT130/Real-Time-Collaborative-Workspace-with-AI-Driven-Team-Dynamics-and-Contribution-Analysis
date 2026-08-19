@@ -81,6 +81,10 @@ interface AppState {
   codeLanguage: string;
   setCodeLanguage: (language: string) => void;
 
+  // Session topic (Phase 4)
+  sessionTopic: string;
+  setSessionTopic: (topic: string) => void;
+
   // Host admission queue (Phase 3)
   pendingKnocks: PendingKnock[];
   addPendingKnock: (knock: PendingKnock) => void;
@@ -107,7 +111,8 @@ const initialState = {
   timerTotal: 0,
   activeTab: 'whiteboard' as ActiveTab,
   problemText: '',
-  codeLanguage: 'javascript',
+  codeLanguage: 'markdown',
+  sessionTopic: '',
   pendingKnocks: [] as PendingKnock[],
 };
 
@@ -157,6 +162,8 @@ export const useAppStore = create<AppState>((set) => ({
   setProblemText: (text) => set({ problemText: text }),
 
   setCodeLanguage: (language) => set({ codeLanguage: language }),
+
+  setSessionTopic: (topic) => set({ sessionTopic: topic }),
 
   addPendingKnock: (knock) =>
     set((state) => ({

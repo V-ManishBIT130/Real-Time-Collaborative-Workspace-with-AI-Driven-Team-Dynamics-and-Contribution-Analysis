@@ -3,6 +3,7 @@ const Session = require('../models/Session');
 const Message = require('../models/Message');
 const WhiteboardEvent = require('../models/WhiteboardEvent');
 const EditorEvent = require('../models/EditorEvent');
+const { analyzeSession } = require('../services/analysisService');
 
 // ============================================================
 // IN-MEMORY STORE (Hybrid: in-memory for speed + MongoDB for persistence)
@@ -148,7 +149,7 @@ module.exports = function initializeSocket(io) {
     // -----------------------------------------------------------
     // CREATE ROOM
     // -----------------------------------------------------------
-    socket.on('create_room', async ({ timerDuration = 15, maxParticipants = 5, problemText = '' }, callback) => {
+    socket.on('create_room', async ({ timerDuration = 15, maxParticipants = 5, problemText = '', topic = '' }, callback) => {
       try {
         // Duplicate tab prevention
         const existing = findRoomByUserId(socket.user.id);
@@ -186,8 +187,9 @@ module.exports = function initializeSocket(io) {
           // Workspace tool state (for sync)
           whiteboardElements: [],
           codeContent: '',
-          codeLanguage: 'javascript',
+          codeLanguage: 'markdown',
           problemText: problemText,
+          topic: (topic || '').slice(0, 200),
           // Throttle counters for persistence
           whiteboardPersistCounter: 0
         };
@@ -195,6 +197,7 @@ module.exports = function initializeSocket(io) {
         // Save to MongoDB
         const dbSession = await Session.create({
           roomCode,
+          topic: room.topic,
           hostUserId: socket.user.id,
           participants: [{
             userId: socket.user.id,
@@ -275,8 +278,9 @@ module.exports = function initializeSocket(io) {
               messages: room.messages,
               whiteboardElements: room.whiteboardElements || [],
               codeContent: room.codeContent || '',
-              codeLanguage: room.codeLanguage || 'javascript',
+              codeLanguage: room.codeLanguage || 'markdown',
               problemText: room.problemText || '',
+              topic: room.topic || '',
               timerRemaining: room.timerRemaining,
               timerTotal: room.settings.timerDuration * 60
             }
@@ -348,7 +352,8 @@ module.exports = function initializeSocket(io) {
               status: room.status,
               participants: safeParticipants,
               settings: room.settings,
-              messages: room.messages
+              messages: room.messages,
+              topic: room.topic || ''
             }
           });
           return;
@@ -637,6 +642,11 @@ module.exports = function initializeSocket(io) {
               duration: room.settings.timerDuration
             });
             console.log(`⏱️ Room ${room.roomCode} session ended (timer). ${room.messages.length} messages.`);
+
+            // ── Trigger ML Analysis (async — doesn't block) ──
+            analyzeSession(io, room).catch(err => {
+              console.error(`❌ ML analysis trigger failed for room ${room.roomCode}:`, err.message);
+            });
           }
         }, 1000);
 
@@ -644,7 +654,8 @@ module.exports = function initializeSocket(io) {
           startedAt: room.startedAt,
           timerDuration: room.settings.timerDuration,
           timerRemaining: room.timerRemaining,
-          problemText: room.problemText || ''
+          problemText: room.problemText || '',
+          topic: room.topic || ''
         });
 
         console.log(`🚀 Session started in room ${room.roomCode} — ${room.settings.timerDuration} min timer`);
@@ -798,6 +809,103 @@ module.exports = function initializeSocket(io) {
     });
 
     // -----------------------------------------------------------
+    // WEBRTC SIGNALING — Peer-to-peer video/audio relay
+    // The server only relays signaling data (SDP offers/answers
+    // and ICE candidates). No media streams touch the server.
+    // TODO (Production): Add TURN server relay for cross-network NAT traversal
+    // -----------------------------------------------------------
+
+    // Participant announces they joined the video call
+    socket.on('webrtc_join', ({ roomCode: rc }) => {
+      try {
+        const room = rooms.get(socket.roomCode || rc);
+        if (!room) return;
+
+        // Notify all other participants that a new peer joined the call
+        socket.to(room.roomCode).emit('webrtc_peer_joined', {
+          userId: socket.user.id,
+          userName: socket.user.name,
+          userColor: room.participants.find(p => p.id === socket.user.id)?.color || '#6366f1'
+        });
+
+        console.log(`📹 ${socket.user.name} joined video call in room ${room.roomCode}`);
+      } catch (err) {
+        console.error('WebRTC join error:', err.message);
+      }
+    });
+
+    // Relay SDP offer from caller to callee
+    socket.on('webrtc_offer', ({ to, offer }) => {
+      try {
+        const room = rooms.get(socket.roomCode);
+        if (!room) return;
+
+        const target = room.participants.find(p => p.id === to);
+        if (!target?.socketId) return;
+
+        io.to(target.socketId).emit('webrtc_offer', {
+          from: socket.user.id,
+          fromName: socket.user.name,
+          offer
+        });
+      } catch (err) {
+        console.error('WebRTC offer relay error:', err.message);
+      }
+    });
+
+    // Relay SDP answer from callee back to caller
+    socket.on('webrtc_answer', ({ to, answer }) => {
+      try {
+        const room = rooms.get(socket.roomCode);
+        if (!room) return;
+
+        const target = room.participants.find(p => p.id === to);
+        if (!target?.socketId) return;
+
+        io.to(target.socketId).emit('webrtc_answer', {
+          from: socket.user.id,
+          answer
+        });
+      } catch (err) {
+        console.error('WebRTC answer relay error:', err.message);
+      }
+    });
+
+    // Relay ICE candidate for NAT traversal
+    socket.on('webrtc_ice_candidate', ({ to, candidate }) => {
+      try {
+        const room = rooms.get(socket.roomCode);
+        if (!room) return;
+
+        const target = room.participants.find(p => p.id === to);
+        if (!target?.socketId) return;
+
+        io.to(target.socketId).emit('webrtc_ice_candidate', {
+          from: socket.user.id,
+          candidate
+        });
+      } catch (err) {
+        console.error('WebRTC ICE candidate relay error:', err.message);
+      }
+    });
+
+    // Participant leaves the video call (but stays in room)
+    socket.on('webrtc_leave', ({ roomCode: rc }) => {
+      try {
+        const room = rooms.get(socket.roomCode || rc);
+        if (!room) return;
+
+        socket.to(room.roomCode).emit('webrtc_peer_left', {
+          userId: socket.user.id
+        });
+
+        console.log(`📹 ${socket.user.name} left video call in room ${room.roomCode}`);
+      } catch (err) {
+        console.error('WebRTC leave error:', err.message);
+      }
+    });
+
+    // -----------------------------------------------------------
     // END SESSION EARLY (Host only)
     // -----------------------------------------------------------
     socket.on('end_session', async (_, callback) => {
@@ -841,6 +949,11 @@ module.exports = function initializeSocket(io) {
         });
 
         console.log(`🛑 Room ${room.roomCode} ended early by host. ${room.messages.length} messages.`);
+
+        // ── Trigger ML Analysis (async — doesn't block) ──
+        analyzeSession(io, room).catch(err => {
+          console.error(`❌ ML analysis trigger failed for room ${room.roomCode}:`, err.message);
+        });
         callback?.({ success: true });
       } catch (err) {
         console.error('End session error:', err.message);
@@ -910,6 +1023,13 @@ module.exports = function initializeSocket(io) {
     // -----------------------------------------------------------
     socket.on('disconnect', async () => {
       console.log(`💨 Client disconnected: ${socket.id} (${socket.user?.name || 'unknown'})`);
+
+      // Immediately notify WebRTC peers so they clean up connections
+      if (socket.roomCode && socket.user?.id) {
+        socket.to(socket.roomCode).emit('webrtc_peer_left', {
+          userId: socket.user.id
+        });
+      }
 
       const room = rooms.get(socket.roomCode);
       if (!room) {

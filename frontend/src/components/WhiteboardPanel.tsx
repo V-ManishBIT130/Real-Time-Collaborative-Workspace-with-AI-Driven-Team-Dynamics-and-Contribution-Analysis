@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState } from 'react';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { Excalidraw } from '@excalidraw/excalidraw';
 import '@excalidraw/excalidraw/index.css';
 import { useSocketEvent, useSocketEmit } from '../hooks/useSocket';
@@ -10,7 +10,7 @@ interface WhiteboardPanelProps {
   initialElements?: any[];
 }
 
-export default function WhiteboardPanel({ isReadOnly, initialElements }: WhiteboardPanelProps) {
+function WhiteboardPanelComponent({ isReadOnly, initialElements }: WhiteboardPanelProps) {
   const emit = useSocketEmit();
   const { user } = useAuthStore();
   const excalidrawAPIRef = useRef<ExcalidrawImperativeAPI | null>(null);
@@ -84,3 +84,6 @@ export default function WhiteboardPanel({ isReadOnly, initialElements }: Whitebo
     </div>
   );
 }
+
+export default React.memo(WhiteboardPanelComponent);
+

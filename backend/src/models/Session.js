@@ -16,6 +16,12 @@ const sessionSchema = new mongoose.Schema({
     uppercase: true,
     index: true
   },
+  topic: {
+    type: String,
+    default: '',
+    maxlength: 200,
+    trim: true
+  },
   hostUserId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

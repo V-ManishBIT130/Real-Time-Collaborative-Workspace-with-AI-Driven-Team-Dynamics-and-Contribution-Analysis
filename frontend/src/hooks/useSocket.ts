@@ -3,8 +3,9 @@ import { io, Socket } from 'socket.io-client';
 
 // Auto-detect: if accessed via IP (e.g. 192.168.x.x), connect Socket.IO to same IP
 // This makes it work across WiFi devices without config changes
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
-  || `http://${window.location.hostname}:3001`;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL !== undefined
+  ? import.meta.env.VITE_BACKEND_URL
+  : (window.location.protocol === 'https:' ? window.location.origin : `http://${window.location.hostname}:3001`);
 
 let socketInstance: Socket | null = null;
 
