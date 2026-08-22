@@ -563,6 +563,8 @@ module.exports = function initializeSocket(io) {
 
         room.participants = room.participants.filter(p => p.id !== userId);
 
+        io.to(room.roomCode).emit('webrtc_peer_left', { userId: kicked.id });
+
         // Notify the kicked user
         const allSockets = await io.in(room.roomCode).fetchSockets();
         const kickedSocket = allSockets.find(s => s.user?.id === userId);
@@ -812,13 +814,14 @@ module.exports = function initializeSocket(io) {
     // WEBRTC SIGNALING — Peer-to-peer video/audio relay
     // The server only relays signaling data (SDP offers/answers
     // and ICE candidates). No media streams touch the server.
-    // TODO (Production): Add TURN server relay for cross-network NAT traversal
+    // TURN credentials are supplied by the authenticated REST endpoint; this
+    // server only relays signalling, never media.
     // -----------------------------------------------------------
 
     // Participant announces they joined the video call
-    socket.on('webrtc_join', ({ roomCode: rc }) => {
+    socket.on('webrtc_join', ({ roomCode: rc } = {}) => {
       try {
-        const room = rooms.get(socket.roomCode || rc);
+        const room = rooms.get(socket.roomCode || rc) || findRoomByUserId(socket.user.id)?.room;
         if (!room) return;
 
         // Notify all other participants that a new peer joined the call
@@ -835,13 +838,16 @@ module.exports = function initializeSocket(io) {
     });
 
     // Relay SDP offer from caller to callee
-    socket.on('webrtc_offer', ({ to, offer }) => {
+    socket.on('webrtc_offer', ({ to, offer, roomCode: rc }) => {
       try {
-        const room = rooms.get(socket.roomCode);
+        const room = rooms.get(socket.roomCode || rc) || findRoomByUserId(socket.user.id)?.room;
         if (!room) return;
 
         const target = room.participants.find(p => p.id === to);
-        if (!target?.socketId) return;
+        if (!target?.socketId) {
+          console.warn(`WebRTC offer dropped: target ${to} is not connected in room ${room.roomCode}`);
+          return;
+        }
 
         io.to(target.socketId).emit('webrtc_offer', {
           from: socket.user.id,
@@ -854,13 +860,16 @@ module.exports = function initializeSocket(io) {
     });
 
     // Relay SDP answer from callee back to caller
-    socket.on('webrtc_answer', ({ to, answer }) => {
+    socket.on('webrtc_answer', ({ to, answer, roomCode: rc }) => {
       try {
-        const room = rooms.get(socket.roomCode);
+        const room = rooms.get(socket.roomCode || rc) || findRoomByUserId(socket.user.id)?.room;
         if (!room) return;
 
         const target = room.participants.find(p => p.id === to);
-        if (!target?.socketId) return;
+        if (!target?.socketId) {
+          console.warn(`WebRTC answer dropped: target ${to} is not connected in room ${room.roomCode}`);
+          return;
+        }
 
         io.to(target.socketId).emit('webrtc_answer', {
           from: socket.user.id,
@@ -872,13 +881,16 @@ module.exports = function initializeSocket(io) {
     });
 
     // Relay ICE candidate for NAT traversal
-    socket.on('webrtc_ice_candidate', ({ to, candidate }) => {
+    socket.on('webrtc_ice_candidate', ({ to, candidate, roomCode: rc }) => {
       try {
-        const room = rooms.get(socket.roomCode);
+        const room = rooms.get(socket.roomCode || rc) || findRoomByUserId(socket.user.id)?.room;
         if (!room) return;
 
         const target = room.participants.find(p => p.id === to);
-        if (!target?.socketId) return;
+        if (!target?.socketId) {
+          console.warn(`WebRTC ICE candidate dropped: target ${to} is not connected in room ${room.roomCode}`);
+          return;
+        }
 
         io.to(target.socketId).emit('webrtc_ice_candidate', {
           from: socket.user.id,
@@ -889,10 +901,66 @@ module.exports = function initializeSocket(io) {
       }
     });
 
+    // Handle renegotiation requests between peers
+    socket.on('webrtc_renegotiate_request', ({ to, iceRestart = false, roomCode: rc }) => {
+      try {
+        const room = rooms.get(socket.roomCode || rc) || findRoomByUserId(socket.user.id)?.room;
+        if (!room) return;
+
+        const target = room.participants.find(p => p.id === to);
+        if (!target?.socketId) {
+          console.warn(`WebRTC renegotiation request dropped: target ${to} is not connected in room ${room.roomCode}`);
+          return;
+        }
+
+        io.to(target.socketId).emit('webrtc_renegotiate_request', {
+          from: socket.user.id,
+          fromName: socket.user.name,
+          iceRestart: Boolean(iceRestart)
+        });
+      } catch (err) {
+        console.error('WebRTC renegotiation request error:', err.message);
+      }
+    });
+
+    // Participant toggles their camera on/off
+    socket.on('webrtc_camera_toggle', ({ isCameraOn, roomCode: rc }) => {
+      try {
+        const room = rooms.get(socket.roomCode || rc) || findRoomByUserId(socket.user.id)?.room;
+        if (!room) return;
+
+        socket.to(room.roomCode).emit('webrtc_camera_toggle', {
+          userId: socket.user.id,
+          isCameraOn: Boolean(isCameraOn)
+        });
+
+        console.log(`📹 ${socket.user.name} camera ${isCameraOn ? 'ON' : 'OFF'} in room ${room.roomCode}`);
+      } catch (err) {
+        console.error('WebRTC camera toggle error:', err.message);
+      }
+    });
+
+    // Participant toggles their mic on/off
+    socket.on('webrtc_mic_toggle', ({ isMicOn, roomCode: rc }) => {
+      try {
+        const room = rooms.get(socket.roomCode || rc) || findRoomByUserId(socket.user.id)?.room;
+        if (!room) return;
+
+        socket.to(room.roomCode).emit('webrtc_mic_toggle', {
+          userId: socket.user.id,
+          isMicOn: Boolean(isMicOn)
+        });
+
+        console.log(`🎙️ ${socket.user.name} mic ${isMicOn ? 'ON' : 'OFF'} in room ${room.roomCode}`);
+      } catch (err) {
+        console.error('WebRTC mic toggle error:', err.message);
+      }
+    });
+
     // Participant leaves the video call (but stays in room)
     socket.on('webrtc_leave', ({ roomCode: rc }) => {
       try {
-        const room = rooms.get(socket.roomCode || rc);
+        const room = rooms.get(socket.roomCode || rc) || findRoomByUserId(socket.user.id)?.room;
         if (!room) return;
 
         socket.to(room.roomCode).emit('webrtc_peer_left', {
@@ -970,6 +1038,11 @@ module.exports = function initializeSocket(io) {
         if (room) {
           console.log(`🚪 ${socket.user.name} left room ${socket.roomCode}`);
 
+          // This is an intentional leave, so peers can release media now.
+          socket.to(room.roomCode).emit('webrtc_peer_left', {
+            userId: socket.user.id
+          });
+
           const leaving = room.participants.find(p => p.id === socket.user.id);
 
           // Move to pastParticipants (for rejoin tracking)
@@ -1021,15 +1094,8 @@ module.exports = function initializeSocket(io) {
     // -----------------------------------------------------------
     // DISCONNECT (with 15-second grace period)
     // -----------------------------------------------------------
-    socket.on('disconnect', async () => {
-      console.log(`💨 Client disconnected: ${socket.id} (${socket.user?.name || 'unknown'})`);
-
-      // Immediately notify WebRTC peers so they clean up connections
-      if (socket.roomCode && socket.user?.id) {
-        socket.to(socket.roomCode).emit('webrtc_peer_left', {
-          userId: socket.user.id
-        });
-      }
+    socket.on('disconnect', async (reason) => {
+      console.log(`💨 Client disconnected: ${socket.id} (${socket.user?.name || 'unknown'}; ${reason})`);
 
       const room = rooms.get(socket.roomCode);
       if (!room) {
@@ -1067,6 +1133,13 @@ module.exports = function initializeSocket(io) {
           });
 
           currentRoom.participants = currentRoom.participants.filter(p => p.id !== socket.user.id);
+
+          // Only announce a media departure after the reconnection grace
+          // period expires. Closing a WebRTC peer connection immediately on a
+          // transient Socket.IO/tunnel reconnect caused one-way media.
+          io.to(currentRoom.roomCode).emit('webrtc_peer_left', {
+            userId: socket.user.id
+          });
 
           io.to(currentRoom.roomCode).emit('participant_left', {
             userId: socket.user.id,

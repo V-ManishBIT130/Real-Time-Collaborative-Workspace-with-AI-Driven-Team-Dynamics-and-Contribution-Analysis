@@ -11,16 +11,37 @@ const initializeSocket = require('./src/sockets/socketHandler');
 const Report = require('./src/models/Report');
 const Session = require('./src/models/Session');
 const { checkMLHealth, retryAnalysis } = require('./src/services/analysisService');
+const crypto = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3001;
+const configuredOrigins = (process.env.CORS_ORIGINS || process.env.FRONTEND_URL || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
+const allowAllOrigins = configuredOrigins.includes('*');
+const isQuickTunnelOrigin = (origin) => /^https:\/\/[a-z0-9-]+\.trycloudflare\.com$/i.test(origin || '');
+
+// Same-origin production traffic does not need CORS. This allow-list exists for
+// local Vite development or deliberately split frontend/backend deployments.
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin || isQuickTunnelOrigin(origin) || allowAllOrigins || configuredOrigins.length === 0 || configuredOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error(`Origin ${origin} is not allowed`));
+  },
+  methods: ['GET', 'POST'],
+  credentials: true
+};
 
 // ============================================================
 // Middleware
 // ============================================================
-app.use(cors());
+app.set('trust proxy', 1);
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' })); // Larger limit for report data
 
 // ============================================================
@@ -38,6 +59,53 @@ app.get('/api/health', async (req, res) => {
 
 // Auth routes (public)
 app.use('/api/auth', authRoutes);
+
+// Return short-lived TURN credentials to authenticated clients. The shared
+// secret stays on the server; browsers never receive a reusable relay password.
+app.get('/api/webrtc/ice-servers', authMiddleware, (req, res) => {
+  const turnUrls = (process.env.TURN_URLS || '')
+    .split(',')
+    .map(url => url.trim())
+    .filter(Boolean);
+
+  const iceServers = [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun.cloudflare.com:3478' },
+    { urls: 'stun:global.stun.twilio.com:3478' },
+    { urls: 'stun:stun.services.mozilla.com' },
+  ];
+
+  if (turnUrls.length > 0 && process.env.TURN_SHARED_SECRET) {
+    const expiresAt = Math.floor(Date.now() / 1000) + 60 * 60;
+    const username = `${expiresAt}:${req.user.id}`;
+    const credential = crypto
+      .createHmac('sha1', process.env.TURN_SHARED_SECRET)
+      .update(username)
+      .digest('base64');
+    iceServers.push({ urls: turnUrls, username, credential });
+  } else if (turnUrls.length > 0 && process.env.TURN_USERNAME && process.env.TURN_CREDENTIAL) {
+    iceServers.push({
+      urls: turnUrls,
+      username: process.env.TURN_USERNAME,
+      credential: process.env.TURN_CREDENTIAL
+    });
+  } else {
+    // Default open relay fallback for testing environments
+    iceServers.push({
+      urls: [
+        'turn:openrelay.metered.ca:80',
+        'turn:openrelay.metered.ca:443',
+        'turn:openrelay.metered.ca:443?transport=tcp',
+      ],
+      username: 'openrelay',
+      credential: 'openrelay',
+    });
+  }
+
+  res.json({ iceServers });
+});
 
 // Protected route — room info
 app.get('/api/rooms/:roomCode', authMiddleware, async (req, res) => {
@@ -113,13 +181,28 @@ app.get('/api/ml/health', async (req, res) => {
 });
 
 // ============================================================
+// Static Frontend Serving (Built Assets)
+// ============================================================
+const path = require('path');
+const fs = require('fs');
+const frontendDist = path.join(__dirname, '../frontend/dist');
+
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  // SPA Fallback: for any non-API GET request, serve index.html
+  app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/socket.io')) {
+      return res.sendFile(path.join(frontendDist, 'index.html'));
+    }
+    next();
+  });
+}
+
+// ============================================================
 // Socket.IO Setup
 // ============================================================
 const io = new Server(server, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
+  cors: corsOptions
 });
 
 initializeSocket(io);

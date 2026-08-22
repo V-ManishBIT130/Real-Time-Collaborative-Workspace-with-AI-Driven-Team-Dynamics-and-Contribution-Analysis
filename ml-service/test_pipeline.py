@@ -250,6 +250,14 @@ def test_seed(seed_name):
             print(f"  {RED}❌ ML Error: {report['error']}{RESET}")
             return False
 
+        # Save analysis report to seed directory and seed/reports/
+        reports_dir = os.path.join(SEED_DIR, 'reports')
+        os.makedirs(reports_dir, exist_ok=True)
+        report_path = os.path.join(reports_dir, f'{seed_name}_report.json')
+        with open(report_path, 'w', encoding='utf-8') as f:
+            json.dump(report, f, indent=2, ensure_ascii=False)
+        print(f"  💾 Saved report to: {report_path}")
+
         # Validate structure
         errors, warnings = validate_report(report, seed_name)
 

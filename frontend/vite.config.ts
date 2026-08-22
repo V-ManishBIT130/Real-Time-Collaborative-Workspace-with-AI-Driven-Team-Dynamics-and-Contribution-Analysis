@@ -17,7 +17,10 @@ export default defineConfig({
   server: {
     host: true, // Expose on local network (0.0.0.0)
     port: 5173,
-    https: httpsConfig,
+    // Allow tunnel hostnames (localtunnel, cloudflare, ngrok)
+    allowedHosts: true,
+    // When tunneling, the tunnel provides public HTTPS, so local server runs plain HTTP
+    https: process.env.HTTPS === 'true' && httpsConfig ? httpsConfig : undefined,
     proxy: {
       '/api': {
         target: 'http://localhost:3001',

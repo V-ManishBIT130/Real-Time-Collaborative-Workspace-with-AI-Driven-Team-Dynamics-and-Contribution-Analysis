@@ -1,0 +1,1292 @@
+{
+  "communicationNetwork": {
+    "density": 0.9167,
+    "edges": [
+      {
+        "from": "user_alice",
+        "fromName": "Alice",
+        "to": "user_bob",
+        "toName": "Bob",
+        "weight": 9
+      },
+      {
+        "from": "user_alice",
+        "fromName": "Alice",
+        "to": "user_carol",
+        "toName": "Carol",
+        "weight": 4
+      },
+      {
+        "from": "user_alice",
+        "fromName": "Alice",
+        "to": "user_dave",
+        "toName": "Dave",
+        "weight": 2
+      },
+      {
+        "from": "user_carol",
+        "fromName": "Carol",
+        "to": "user_dave",
+        "toName": "Dave",
+        "weight": 9
+      },
+      {
+        "from": "user_carol",
+        "fromName": "Carol",
+        "to": "user_alice",
+        "toName": "Alice",
+        "weight": 2
+      },
+      {
+        "from": "user_bob",
+        "fromName": "Bob",
+        "to": "user_carol",
+        "toName": "Carol",
+        "weight": 9
+      },
+      {
+        "from": "user_bob",
+        "fromName": "Bob",
+        "to": "user_alice",
+        "toName": "Alice",
+        "weight": 1
+      },
+      {
+        "from": "user_bob",
+        "fromName": "Bob",
+        "to": "user_dave",
+        "toName": "Dave",
+        "weight": 1
+      },
+      {
+        "from": "user_dave",
+        "fromName": "Dave",
+        "to": "user_alice",
+        "toName": "Alice",
+        "weight": 8
+      },
+      {
+        "from": "user_dave",
+        "fromName": "Dave",
+        "to": "user_bob",
+        "toName": "Bob",
+        "weight": 5
+      },
+      {
+        "from": "user_dave",
+        "fromName": "Dave",
+        "to": "user_carol",
+        "toName": "Carol",
+        "weight": 1
+      }
+    ],
+    "hubMember": {
+      "betweennessCentrality": 0.0833,
+      "name": "Alice",
+      "userId": "user_alice"
+    },
+    "isolatedMembers": [],
+    "nodePositions": {
+      "user_alice": [
+        0.6608,
+        -0.7514
+      ],
+      "user_bob": [
+        1.0,
+        0.6251
+      ],
+      "user_carol": [
+        -0.9627,
+        0.9874
+      ],
+      "user_dave": [
+        -0.6981,
+        -0.861
+      ]
+    },
+    "nodes": [
+      {
+        "betweennessCentrality": 0.0833,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 9,
+        "name": "Alice",
+        "position": [
+          0.6608,
+          -0.7514
+        ],
+        "userId": "user_alice"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 1.6667,
+        "isIsolated": 0,
+        "messageCount": 9,
+        "name": "Carol",
+        "position": [
+          -0.9627,
+          0.9874
+        ],
+        "userId": "user_carol"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 1.6667,
+        "isIsolated": 0,
+        "messageCount": 9,
+        "name": "Bob",
+        "position": [
+          1.0,
+          0.6251
+        ],
+        "userId": "user_bob"
+      },
+      {
+        "betweennessCentrality": 0.0833,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 9,
+        "name": "Dave",
+        "position": [
+          -0.6981,
+          -0.861
+        ],
+        "userId": "user_dave"
+      }
+    ],
+    "pattern": "Healthy Mesh",
+    "reciprocity": 0.9091,
+    "strongestLink": {
+      "from": "Alice",
+      "to": "Bob",
+      "weight": 9
+    }
+  },
+  "contributions": {
+    "byMember": [
+      {
+        "agreements": 0,
+        "avgSentiment": 0.524,
+        "buildingOnOthers": 7,
+        "coordination": 1,
+        "disagreements": 0,
+        "messageCount": 9,
+        "name": "Alice",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.356,
+        "questions": 1,
+        "sentimentLabel": "neutral",
+        "textMessages": 9,
+        "userId": "user_alice",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 4,
+        "avgSentiment": 0.518,
+        "buildingOnOthers": 3,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 9,
+        "name": "Bob",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.244,
+        "questions": 2,
+        "sentimentLabel": "neutral",
+        "textMessages": 9,
+        "userId": "user_bob",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 0,
+        "avgSentiment": 0.641,
+        "buildingOnOthers": 6,
+        "coordination": 1,
+        "disagreements": 0,
+        "messageCount": 9,
+        "name": "Carol",
+        "newIdeas": 1,
+        "offTopic": 0,
+        "qualityScore": 0.367,
+        "questions": 1,
+        "sentimentLabel": "positive",
+        "textMessages": 9,
+        "userId": "user_carol",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 1,
+        "avgSentiment": 0.598,
+        "buildingOnOthers": 6,
+        "coordination": 0,
+        "disagreements": 1,
+        "messageCount": 9,
+        "name": "Dave",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.322,
+        "questions": 1,
+        "sentimentLabel": "neutral",
+        "textMessages": 9,
+        "userId": "user_dave",
+        "voiceMessages": 0
+      }
+    ],
+    "equity": 1,
+    "equityLabel": "Highly Equitable",
+    "totalMessages": 36
+  },
+  "explorationScore": {
+    "distribution": {
+      "0": 5,
+      "1": 12,
+      "2": 6,
+      "3": 2,
+      "4": 2
+    },
+    "interpretation": "Team thoroughly explored 5 distinct approaches with well-balanced discussion across all clusters.",
+    "label": "High Exploration",
+    "n_clusters": 5,
+    "score": 0.865
+  },
+  "ideaClusters": {
+    "clusters": [
+      {
+        "clusterId": 0,
+        "contributorCounts": {
+          "user_alice": 1,
+          "user_bob": 2,
+          "user_carol": 1,
+          "user_dave": 1
+        },
+        "firstMentionTime": "2026-03-15T10:00:52.000Z",
+        "messageCount": 5,
+        "messageIndices": [
+          3,
+          5,
+          6,
+          24,
+          25
+        ],
+        "originatorName": "Dave",
+        "originatorUserId": "user_dave",
+        "percentage": 13.9,
+        "representativeText": "What if we implement circuit breakers between the microservices? That would prevent cascading failures."
+      },
+      {
+        "clusterId": 1,
+        "contributorCounts": {
+          "user_alice": 2,
+          "user_bob": 3,
+          "user_carol": 2,
+          "user_dave": 5
+        },
+        "firstMentionTime": "2026-03-15T10:02:05.000Z",
+        "messageCount": 12,
+        "messageIndices": [
+          7,
+          8,
+          9,
+          10,
+          15,
+          16,
+          17,
+          19,
+          21,
+          27,
+          30,
+          31
+        ],
+        "originatorName": "Dave",
+        "originatorUserId": "user_dave",
+        "percentage": 33.3,
+        "representativeText": "Auto-scaling takes time though. For flash sales, we should pre-scale — spin up extra instances 30 minutes before."
+      },
+      {
+        "clusterId": 2,
+        "contributorCounts": {
+          "user_alice": 2,
+          "user_bob": 2,
+          "user_carol": 1,
+          "user_dave": 1
+        },
+        "firstMentionTime": "2026-03-15T10:03:20.000Z",
+        "messageCount": 6,
+        "messageIndices": [
+          11,
+          12,
+          13,
+          14,
+          20,
+          29
+        ],
+        "originatorName": "Dave",
+        "originatorUserId": "user_dave",
+        "percentage": 16.7,
+        "representativeText": "Agreed. The virtual queue is the key insight — it turns a technical failure into a graceful user experience."
+      },
+      {
+        "clusterId": 3,
+        "contributorCounts": {
+          "user_alice": 1,
+          "user_bob": 1
+        },
+        "firstMentionTime": "2026-03-15T10:08:25.000Z",
+        "messageCount": 2,
+        "messageIndices": [
+          28,
+          33
+        ],
+        "originatorName": "Alice",
+        "originatorUserId": "user_alice",
+        "percentage": 5.6,
+        "representativeText": "This is coming together nicely. I think our three-phase approach covers both the immediate crisis and long-term resilience."
+      },
+      {
+        "clusterId": 4,
+        "contributorCounts": {
+          "user_alice": 1,
+          "user_dave": 1
+        },
+        "firstMentionTime": "2026-03-15T10:09:35.000Z",
+        "messageCount": 2,
+        "messageIndices": [
+          32,
+          35
+        ],
+        "originatorName": "Alice",
+        "originatorUserId": "user_alice",
+        "percentage": 5.6,
+        "representativeText": "Agreed. I'm happy with where we ended up. The solution is thorough and actionable."
+      }
+    ],
+    "n_clusters": 5,
+    "noise_count": 9
+  },
+  "messages": [
+    {
+      "clusterLabel": -1,
+      "messageType": "coordination",
+      "messageTypeConfidence": 0.5605,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.4222,
+      "sequenceNumber": 1,
+      "source": "text",
+      "text": "Alright team, let's tackle this e-commerce crash. 50K concurrent users during a flash sale brought everything down.",
+      "timestamp": "2026-03-15T10:00:05.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.4645,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.4625,
+      "sequenceNumber": 2,
+      "source": "text",
+      "text": "First thing I'd check is the database connection pool. With 50K users, the DB connections probably got exhausted.",
+      "timestamp": "2026-03-15T10:00:18.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4102,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.85,
+      "sequenceNumber": 3,
+      "source": "text",
+      "text": "Good point. But could it also be a memory leak in the application server? Maybe the garbage collector couldn't keep up.",
+      "timestamp": "2026-03-15T10:00:35.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.358,
+      "sentimentLabel": "negative",
+      "sentimentScore": 0.3819,
+      "sequenceNumber": 4,
+      "source": "text",
+      "text": "I think we need to consider the architecture itself. Three microservices going down simultaneously suggests a cascading failure.",
+      "timestamp": "2026-03-15T10:00:52.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5288,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.4689,
+      "sequenceNumber": 5,
+      "source": "text",
+      "text": "Dave's right about cascading failure. If the payment service goes down, the order service backs up, which blocks the inventory service.",
+      "timestamp": "2026-03-15T10:01:10.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.4834,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 6,
+      "source": "text",
+      "text": "What if we implement circuit breakers between the microservices? That would prevent cascading failures.",
+      "timestamp": "2026-03-15T10:01:28.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4274,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.85,
+      "sequenceNumber": 7,
+      "source": "text",
+      "text": "Circuit breakers are a good idea. We could use something like Hystrix or Resilience4j for that.",
+      "timestamp": "2026-03-15T10:01:45.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.5329,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 8,
+      "source": "text",
+      "text": "For the database issue, what about connection pooling with PgBouncer? It can handle thousands of connections efficiently.",
+      "timestamp": "2026-03-15T10:02:05.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4946,
+      "sentimentLabel": "negative",
+      "sentimentScore": 0.375,
+      "sequenceNumber": 9,
+      "source": "text",
+      "text": "We should also think about adding a Redis caching layer. A lot of flash sale reads are repetitive — product info, prices.",
+      "timestamp": "2026-03-15T10:02:25.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "agreement",
+      "messageTypeConfidence": 0.6177,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 10,
+      "source": "text",
+      "text": "Yes! Redis with a TTL of 30 seconds for product data would reduce DB load by probably 80%.",
+      "timestamp": "2026-03-15T10:02:42.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.6044,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 11,
+      "source": "text",
+      "text": "What about the immediate fix though? For the next flash sale, what's the quickest thing we can deploy?",
+      "timestamp": "2026-03-15T10:03:02.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": 2,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5142,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 12,
+      "source": "text",
+      "text": "Rate limiting at the API gateway level. Cap it at 10K requests per second and queue the rest.",
+      "timestamp": "2026-03-15T10:03:20.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    },
+    {
+      "clusterLabel": 2,
+      "messageType": "question",
+      "messageTypeConfidence": 0.398,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 13,
+      "source": "text",
+      "text": "That could frustrate users though. Maybe a virtual waiting room instead? Like Ticketmaster uses.",
+      "timestamp": "2026-03-15T10:03:40.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": 2,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5483,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.75,
+      "sequenceNumber": 14,
+      "source": "text",
+      "text": "A virtual queue is more user-friendly. They see their position and estimated wait time instead of just getting errors.",
+      "timestamp": "2026-03-15T10:03:58.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": 2,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.3388,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 15,
+      "source": "text",
+      "text": "I like the queue idea. We could implement it with AWS SQS or even a simple Redis-based queue.",
+      "timestamp": "2026-03-15T10:04:15.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.625,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.75,
+      "sequenceNumber": 16,
+      "source": "text",
+      "text": "Let's also think about horizontal scaling. Auto-scaling groups that spin up more instances when CPU hits 70%.",
+      "timestamp": "2026-03-15T10:04:35.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4092,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 17,
+      "source": "text",
+      "text": "Auto-scaling takes time though. For flash sales, we should pre-scale — spin up extra instances 30 minutes before.",
+      "timestamp": "2026-03-15T10:04:55.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "agreement",
+      "messageTypeConfidence": 0.6751,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 18,
+      "source": "text",
+      "text": "Agreed. Pre-scaling plus auto-scaling as a safety net. Let me think about the cost implications.",
+      "timestamp": "2026-03-15T10:05:12.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.6634,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 19,
+      "source": "text",
+      "text": "For the memory leak Bob mentioned earlier, we should add monitoring. Prometheus + Grafana dashboards for heap usage.",
+      "timestamp": "2026-03-15T10:05:30.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.295,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 20,
+      "source": "text",
+      "text": "Monitoring is essential. We need alerts before things crash, not after. Set thresholds at 80% CPU and 70% memory.",
+      "timestamp": "2026-03-15T10:05:48.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    },
+    {
+      "clusterLabel": 2,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.7962,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 21,
+      "source": "text",
+      "text": "So to summarize our approach: immediate fix is virtual queue plus rate limiting, medium-term is caching and circuit breakers.",
+      "timestamp": "2026-03-15T10:06:05.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5724,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 22,
+      "source": "text",
+      "text": "And long-term is auto-scaling, pre-scaling for known events, and comprehensive monitoring.",
+      "timestamp": "2026-03-15T10:06:22.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4697,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 23,
+      "source": "text",
+      "text": "I think we should also add load testing to the CI pipeline. Simulate 50K users before every deployment.",
+      "timestamp": "2026-03-15T10:06:40.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4571,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.7139,
+      "sequenceNumber": 24,
+      "source": "text",
+      "text": "Great idea Carol. Tools like k6 or Locust can do that. We should test both happy path and failure scenarios.",
+      "timestamp": "2026-03-15T10:06:58.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4483,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 25,
+      "source": "text",
+      "text": "Should we write some pseudocode for the circuit breaker pattern? I can sketch it in the editor.",
+      "timestamp": "2026-03-15T10:07:15.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "agreement",
+      "messageTypeConfidence": 0.5433,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 26,
+      "source": "text",
+      "text": "Yes, let's do that. I'll work on the caching layer pseudocode while you do the circuit breaker.",
+      "timestamp": "2026-03-15T10:07:32.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.6276,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.7,
+      "sequenceNumber": 27,
+      "source": "text",
+      "text": "I'll draw the architecture diagram on the whiteboard showing how all these components fit together.",
+      "timestamp": "2026-03-15T10:07:50.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5296,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 28,
+      "source": "text",
+      "text": "And I'll outline the monitoring and alerting strategy. What metrics to track and what thresholds to set.",
+      "timestamp": "2026-03-15T10:08:08.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    },
+    {
+      "clusterLabel": 3,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.8372,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.8,
+      "sequenceNumber": 29,
+      "source": "text",
+      "text": "This is coming together nicely. I think our three-phase approach covers both the immediate crisis and long-term resilience.",
+      "timestamp": "2026-03-15T10:08:25.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": 2,
+      "messageType": "agreement",
+      "messageTypeConfidence": 0.5828,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.4472,
+      "sequenceNumber": 30,
+      "source": "text",
+      "text": "Agreed. The virtual queue is the key insight — it turns a technical failure into a graceful user experience.",
+      "timestamp": "2026-03-15T10:08:42.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "new idea",
+      "messageTypeConfidence": 0.2896,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6937,
+      "sequenceNumber": 31,
+      "source": "text",
+      "text": "One thing we haven't discussed — database read replicas. That could also reduce primary DB load significantly.",
+      "timestamp": "2026-03-15T10:09:00.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.632,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6375,
+      "sequenceNumber": 32,
+      "source": "text",
+      "text": "Good catch. Read replicas for product queries, primary only for writes like orders. That's a solid pattern.",
+      "timestamp": "2026-03-15T10:09:18.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    },
+    {
+      "clusterLabel": 4,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4853,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.65,
+      "sequenceNumber": 33,
+      "source": "text",
+      "text": "Let's make sure we mention that in our final solution. It's a practical win with minimal code changes.",
+      "timestamp": "2026-03-15T10:09:35.000Z",
+      "userId": "user_alice",
+      "userName": "Alice"
+    },
+    {
+      "clusterLabel": 3,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5469,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 34,
+      "source": "text",
+      "text": "Alright, I think we have a comprehensive solution. Three phases, multiple strategies, and a prevention plan.",
+      "timestamp": "2026-03-15T10:09:50.000Z",
+      "userId": "user_bob",
+      "userName": "Bob"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "coordination",
+      "messageTypeConfidence": 0.7421,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.675,
+      "sequenceNumber": 35,
+      "source": "text",
+      "text": "Good teamwork everyone. Each of us brought different perspectives — infrastructure, application, architecture, and UX.",
+      "timestamp": "2026-03-15T10:10:05.000Z",
+      "userId": "user_carol",
+      "userName": "Carol"
+    },
+    {
+      "clusterLabel": 4,
+      "messageType": "agreement",
+      "messageTypeConfidence": 0.7518,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.9,
+      "sequenceNumber": 36,
+      "source": "text",
+      "text": "Agreed. I'm happy with where we ended up. The solution is thorough and actionable.",
+      "timestamp": "2026-03-15T10:10:20.000Z",
+      "userId": "user_dave",
+      "userName": "Dave"
+    }
+  ],
+  "meta": {
+    "analysisTimeSeconds": 10.78,
+    "device": "cuda",
+    "messageCount": 36,
+    "participantCount": 4
+  },
+  "stuckPeriods": [],
+  "summary": {
+    "collectiveIntelligenceIndicators": {
+      "avgContributionQuality": 0.322,
+      "communicationDensity": 0.9167,
+      "contributionEquity": 1,
+      "explorationScore": 0.865,
+      "stuckRecoveryRate": 1.0
+    },
+    "insights": {
+      "improvements": [
+        "Continue practicing collaborative problem-solving to develop stronger team dynamics."
+      ],
+      "keyMoments": [],
+      "strengths": [
+        "Excellent contribution equity (100%). All team members participated meaningfully.",
+        "Team explored 5 distinct approaches (exploration score: 0.86). Good divergent thinking before convergence.",
+        "Communication network is a healthy mesh (density: 0.92). All members are well-connected and communicating freely.",
+        "Strongest communication link: Alice ↔ Bob (9 interactions).",
+        "No stuck periods detected. Team maintained productive momentum throughout the session."
+      ]
+    },
+    "overallScore": 0.865,
+    "scoreLabel": "Excellent"
+  },
+  "timeline": [
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "coordination": 1,
+        "question": 1
+      },
+      "clusterIds": [],
+      "endTime": 30,
+      "messageCount": 2,
+      "newClusters": 0,
+      "phase": "Building",
+      "sentiment": 0.442,
+      "startTime": 0,
+      "windowIndex": 0
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_carol",
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "disagreement": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 60,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.616,
+      "startTime": 30,
+      "windowIndex": 1
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 90,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.484,
+      "startTime": 60,
+      "windowIndex": 2
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_carol"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 120,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.85,
+      "startTime": 90,
+      "windowIndex": 3
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 150,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.438,
+      "startTime": 120,
+      "windowIndex": 4
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_carol",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "agreement": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 180,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 150,
+      "windowIndex": 5
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        2
+      ],
+      "endTime": 210,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 180,
+      "windowIndex": 6
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        2
+      ],
+      "endTime": 240,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.625,
+      "startTime": 210,
+      "windowIndex": 7
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_carol"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        2
+      ],
+      "endTime": 270,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 240,
+      "windowIndex": 8
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 300,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.625,
+      "startTime": 270,
+      "windowIndex": 9
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_carol",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "agreement": 1,
+        "building on idea": 1
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 330,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Convergence",
+      "sentiment": 0.5,
+      "startTime": 300,
+      "windowIndex": 10
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 360,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 330,
+      "windowIndex": 11
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        1,
+        2
+      ],
+      "endTime": 390,
+      "messageCount": 2,
+      "newClusters": 2,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 360,
+      "windowIndex": 12
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_carol",
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [],
+      "endTime": 420,
+      "messageCount": 2,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.607,
+      "startTime": 390,
+      "windowIndex": 13
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "agreement": 1,
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 450,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Convergence",
+      "sentiment": 0.5,
+      "startTime": 420,
+      "windowIndex": 14
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_carol"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 480,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.7,
+      "startTime": 450,
+      "windowIndex": 15
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        1,
+        3
+      ],
+      "endTime": 510,
+      "messageCount": 2,
+      "newClusters": 2,
+      "phase": "Discussion",
+      "sentiment": 0.65,
+      "startTime": 480,
+      "windowIndex": 16
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_carol",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "agreement": 1,
+        "new idea": 1
+      },
+      "clusterIds": [
+        1,
+        2
+      ],
+      "endTime": 540,
+      "messageCount": 2,
+      "newClusters": 2,
+      "phase": "Wrapping Up",
+      "sentiment": 0.57,
+      "startTime": 510,
+      "windowIndex": 17
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 570,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.637,
+      "startTime": 540,
+      "windowIndex": 18
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_alice",
+        "user_bob"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        3,
+        4
+      ],
+      "endTime": 600,
+      "messageCount": 2,
+      "newClusters": 2,
+      "phase": "Discussion",
+      "sentiment": 0.575,
+      "startTime": 570,
+      "windowIndex": 19
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_carol",
+        "user_dave"
+      ],
+      "classificationBreakdown": {
+        "agreement": 1,
+        "coordination": 1
+      },
+      "clusterIds": [
+        4
+      ],
+      "endTime": 630,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Wrapping Up",
+      "sentiment": 0.788,
+      "startTime": 600,
+      "windowIndex": 20
+    }
+  ]
+}

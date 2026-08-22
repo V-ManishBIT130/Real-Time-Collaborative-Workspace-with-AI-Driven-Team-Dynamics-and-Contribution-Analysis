@@ -50,15 +50,11 @@ export default function Workspace() {
         emit('send_message', { text: spokenText.trim(), source: 'voice' });
       }
     },
-    onError: (err) => {
+    onError: (_err, message) => {
       addToast({
         userName: 'Microphone',
-        type: 'leave',
-        message: err === 'not-allowed'
-          ? 'Microphone permission denied'
-          : err === 'network'
-            ? 'Speech service unavailable — check internet'
-            : `Voice recognition error`
+        type: 'error',
+        message,
       });
     }
   });
@@ -70,21 +66,30 @@ export default function Workspace() {
     userName: user?.name,
     participants: store.participants,
     isActive: store.roomStatus === 'active',
+    onDiagnostic: (diagnostic) => {
+      addToast({
+        userName: diagnostic.peerName || 'Call connection',
+        type: 'error',
+        message: diagnostic.message,
+      });
+    },
   });
 
-  // ── Mic-sharing coordination ──
-  // When voice transcription starts, mute WebRTC mic temporarily.
-  // When voice transcription stops, unmute WebRTC mic.
-  const toggleListening = useCallback(() => {
-    if (!isListening) {
-      // About to start transcription → mute WebRTC mic
-      if (webrtc.isConnected) webrtc.setMicMuted(true);
+  // ── Unified Mic Handler: controls WebRTC audio streaming & speech transcription simultaneously ──
+  const toggleUnifiedMic = useCallback(() => {
+    webrtc.toggleMic();
+    if (!webrtc.isMicOn) {
+      // About to turn ON mic -> start Speech-to-Text if supported
+      if (isVoiceSupported && !isListening) {
+        rawToggleListening();
+      }
     } else {
-      // Stopping transcription → unmute WebRTC mic
-      if (webrtc.isConnected) webrtc.setMicMuted(false);
+      // About to turn OFF mic -> stop Speech-to-Text
+      if (isListening) {
+        stopListening();
+      }
     }
-    rawToggleListening();
-  }, [isListening, webrtc, rawToggleListening]);
+  }, [webrtc, isVoiceSupported, isListening, rawToggleListening, stopListening]);
 
   useEffect(() => {
     if (!store.roomCode || store.roomCode !== roomCode) navigate('/');
@@ -118,23 +123,47 @@ export default function Workspace() {
   // ─────────────────────────────────────
   // Toast helper (Google Meet style)
   // ─────────────────────────────────────
-  const addToast = (toast: Omit<ToastNotification, 'id'>) => {
+  const addToast = useCallback((toast: Omit<ToastNotification, 'id'>) => {
     const id = `toast_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
     setToasts((prev) => [...prev, { ...toast, id }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
-  };
+  }, []);
 
   const dismissToast = (id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
+
+  // The browser can detect full network loss even before Socket.IO has time to
+  // report it. Only surface a message for a real outage, not normal reconnects.
+  useEffect(() => {
+    const handleOffline = () => {
+      addToast({
+        userName: 'Internet connection',
+        type: 'error',
+        message: 'You are offline. Chat, transcription, and calls will reconnect when internet access returns.',
+      });
+    };
+
+    window.addEventListener('offline', handleOffline);
+    return () => window.removeEventListener('offline', handleOffline);
+  }, [addToast]);
 
   // ─────────────────────────────────────
   // Socket Events
   // ─────────────────────────────────────
   useSocketEvent('new_message', (msg: any) => store.addMessage(msg));
   useSocketEvent<{ remaining: number; total: number }>('timer_tick', (d) => store.setTimer(d.remaining, d.total));
+  useSocketEvent<string>('disconnect', (reason) => {
+    if (store.roomStatus === 'active') {
+      addToast({
+        userName: 'Live connection',
+        type: 'error',
+        message: `Connection interrupted (${reason || 'network issue'}). Reconnecting automatically…`,
+      });
+    }
+  });
 
   useSocketEvent<{ participant: any; participants: any[] }>('participant_joined', (d) => {
     store.setParticipants(d.participants);
@@ -331,13 +360,15 @@ export default function Workspace() {
       <VideoOverlay
         localStream={webrtc.localStream}
         remoteStreams={webrtc.remoteStreams}
+        remoteCameraStates={webrtc.remoteCameraStates}
+        remoteMicStates={webrtc.remoteMicStates}
         isCameraOn={webrtc.isCameraOn}
         isMicOn={webrtc.isMicOn}
         isConnected={webrtc.isConnected}
         userName={user?.name || 'You'}
         userColor={store.myParticipant?.color || '#6366f1'}
         onToggleCamera={webrtc.toggleCamera}
-        onToggleMic={webrtc.toggleMic}
+        onToggleMic={toggleUnifiedMic}
         onLeaveCall={webrtc.leaveCall}
         participants={store.participants}
       />
@@ -389,67 +420,61 @@ export default function Workspace() {
           </div>
         </div>
         <div className="header-right">
-          {/* WebRTC Video Call Controls */}
+          {/* WebRTC Video & Unified Mic Controls */}
           {!isCompleted && (
-            <div className="video-call-controls" style={{ display: 'flex', gap: '4px', marginRight: '8px' }}>
-              {!webrtc.isConnected ? (
-                <button
-                  className="mic-btn"
-                  onClick={() => {
-                    if (!navigator.mediaDevices?.getUserMedia) {
-                      addToast({
-                        userName: 'Camera',
-                        type: 'leave',
-                        message: 'Video calls require HTTPS. Use localhost or enable HTTPS for cross-device calls.'
-                      });
-                      return;
-                    }
-                    webrtc.joinCall();
-                  }}
-                  title="Join video call"
-                  style={{ background: 'rgba(99, 102, 241, 0.1)', color: '#818cf8', borderColor: 'rgba(99, 102, 241, 0.3)' }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="video-call-controls" style={{ display: 'flex', gap: '6px', marginRight: '8px' }}>
+              <button
+                className={`mic-btn ${webrtc.isCameraOn ? 'active-cam' : 'off'}`}
+                onClick={webrtc.toggleCamera}
+                title={webrtc.isCameraOn ? 'Turn off camera' : 'Turn on camera'}
+                style={{
+                  background: webrtc.isCameraOn ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.08)',
+                  color: webrtc.isCameraOn ? '#10b981' : '#ef4444',
+                  borderColor: webrtc.isCameraOn ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.3)',
+                  animation: 'none',
+                }}
+              >
+                {webrtc.isCameraOn ? (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M23 7l-7 5 7 5V7z" />
                     <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                   </svg>
-                </button>
-              ) : (
-                <>
-                  <button
-                    className={`mic-btn ${!webrtc.isCameraOn ? 'active' : ''}`}
-                    onClick={webrtc.toggleCamera}
-                    title={webrtc.isCameraOn ? 'Turn off camera' : 'Turn on camera'}
-                    style={{
-                      background: webrtc.isCameraOn ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                      color: webrtc.isCameraOn ? '#10b981' : '#ef4444',
-                      borderColor: webrtc.isCameraOn ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)',
-                      animation: 'none',
-                    }}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M23 7l-7 5 7 5V7z" />
-                      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                    </svg>
-                  </button>
-                  <button
-                    className={`mic-btn ${!webrtc.isMicOn ? 'active' : ''}`}
-                    onClick={webrtc.toggleMic}
-                    title={webrtc.isMicOn ? 'Mute call audio' : 'Unmute call audio'}
-                    style={{
-                      background: webrtc.isMicOn ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                      color: webrtc.isMicOn ? '#10b981' : '#ef4444',
-                      borderColor: webrtc.isMicOn ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)',
-                      animation: 'none',
-                    }}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                    </svg>
-                  </button>
-                </>
-              )}
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                )}
+              </button>
+
+              <button
+                className={`mic-btn ${webrtc.isMicOn ? 'active' : 'off'}`}
+                onClick={toggleUnifiedMic}
+                title={webrtc.isMicOn ? 'Mute microphone (Audio & Speech-to-Text)' : 'Unmute microphone (Audio & Speech-to-Text)'}
+                style={{
+                  background: webrtc.isMicOn ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.08)',
+                  color: webrtc.isMicOn ? '#10b981' : '#ef4444',
+                  borderColor: webrtc.isMicOn ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.3)',
+                  animation: webrtc.isMicOn ? 'micPulse 1.5s infinite ease-in-out' : 'none',
+                }}
+              >
+                {webrtc.isMicOn ? (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                ) : (
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
+                    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .48-.05.96-.13 1.42" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                )}
+              </button>
             </div>
           )}
           <div className="participant-avatars">
@@ -546,21 +571,6 @@ export default function Workspace() {
                   maxLength={500}
                   autoFocus
                 />
-                {isVoiceSupported && (
-                  <button
-                    type="button"
-                    className={`mic-btn ${isListening ? 'active' : ''}`}
-                    onClick={toggleListening}
-                    title={isListening ? 'Stop voice recording' : 'Speak message (Speech-to-Text)'}
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                      <line x1="12" y1="19" x2="12" y2="23" />
-                      <line x1="8" y1="23" x2="16" y2="23" />
-                    </svg>
-                  </button>
-                )}
                 <button className="send-btn" onClick={() => handleSend()} disabled={!text.trim()}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />

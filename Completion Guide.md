@@ -1,19 +1,28 @@
 # CollabLens — Completion & Progress Guide
 
-> **Current Status:** ✅ Phase 1 (JWT Auth & Persistence), Phase 2 (Real-Time Core & Lifecycle), Phase 3 (Workspace Tools), Phase 4 (Voice STT), Phase 5 (WebRTC Video/Audio & HTTPS), and Phase 6 (ML Pipeline & Report UI) Implemented.
-> **Current Focus:** 🎯 ML Pipeline Accuracy Tuning, Metric Calibration & Evaluation against Seed Datasets.
+> **Current Status:**
+>
+> - ✅ **Phase 1**: JWT Authentication & MongoDB Persistence (Fully Complete)
+> - ✅ **Phase 2**: Real-Time Socket.IO Core & Room Lifecycle (Fully Complete)
+> - ✅ **Phase 3**: Collaborative Workspace Tools (Whiteboard, Monaco Code Editor, Sticky Layout, Knock Rejoin) (Fully Complete)
+> - ⚠️ **Phase 4**: Unified Microphone & Web Speech API Transcription (Partially Complete — Works on primary local host; network/no-speech errors on remote tunnel clients)
+> - ⚠️ **Phase 5**: WebRTC Video/Audio Streaming (Incomplete / Unfinished — Multi-device bidirectional video transmission fails between remote peers due to WebRTC mesh renegotiation & NAT limitations)
+> - ✅ **Phase 6**: Local & Remote Tunneling Infrastructure (Cloudflare Tunneling & HTTPS)
+> - ✅ **Phase 7**: ML Intelligence Engine & Dynamics Analytics Report (Fully Complete — 9/9 Benchmark Tests Passing)
 
 ---
 
-## 🎯 Completed Features
+## 🎯 Detailed Feature & Architecture Status
 
 ### 1. Phase 1 — JWT Auth & Persistence (Completed ✅)
+
 - **Authentication**: JWT login/register system with bcrypt password hashing (`/api/auth/register`, `/api/auth/login`, `/api/auth/me`).
 - **Database**: MongoDB integration via Mongoose (`User`, `Session`, `Message`, `Report`, `WhiteboardEvent`, `EditorEvent`).
 - **Frontend UI**: Glassmorphism Login/Register page with state-driven protected routes (`ProtectedRoute`).
 - **Socket Security**: Socket.IO JWT auth handshake verification (`io.use()`).
 
 ### 2. Phase 2 — Real-Time Core & Participant Lifecycle (Completed ✅)
+
 - **Rooms**: Socket.IO room management (Create/Join via 6-character room codes).
 - **Real-Time Chat**: Bi-directional messaging with color-coded participant avatars.
 - **Server Timer**: Synchronized countdown timer controlled by server.
@@ -22,17 +31,21 @@
   - Participants can **Leave Session** (emits `leave_room` and instantly updates room state for everyone).
   - Google Meet style floating **Toast Notifications** (`[Avatar] Name joined/left the session`) for real-time join & leave feedback.
 
-### 3. Phase 3 — Collaborative Workspace Tools (Completed ✅)
+### 3. Phase 3 — Collaborative Workspace Tools & Preserved Navigation (Completed ✅)
+
 - **Collaborative Excalidraw Whiteboard (`WhiteboardPanel.tsx`)**:
   - Real-time drawing synchronization via debounced Socket.IO events.
   - Persistence to MongoDB (`WhiteboardEvent` collection).
   - Read-only mode on session end & state sync for late joiners / rejoiners.
-  - Memoized with `React.memo` to prevent re-renders during speech or video streaming.
+  - Memoized with `React.memo` to prevent re-renders during speech or media events.
 - **Collaborative Monaco Code Editor (`CodeEditorPanel.tsx`)**:
   - Real-time code synchronization (VS Dark theme, JetBrains Mono typography).
   - Multi-language support (JavaScript, Python, TypeScript, C++, Java, HTML, CSS) with synchronized language selection across participants.
   - Persistence to MongoDB (`EditorEvent` collection).
   - Memoized with `React.memo` to isolate editor state.
+- **Pinned Workspace Navigation & Fixed Layout (`Workspace.css`)**:
+  - Applied strict `min-height: 0; min-width: 0;` bounds across `.workspace-main`, `.chat-panel`, `.messages-container`, `.main-area`, and `.workspace-tab-content`.
+  - Pinned `.workspace-tabs` (`Whiteboard` ✏️ | `Code Editor` 💻) and `.chat-header` firmly at the top, preventing canvas overflow or chat scrolling from pushing headers off the screen.
 - **Participant Rejoin System (Google Meet Style)**:
   - Knock-to-admit flow: Participant who left an active session can request to rejoin. Host receives an admission toast bar with Accept / Deny controls.
   - Full state sync on rejoin (messages, whiteboard elements, code content, timer state).
@@ -42,28 +55,54 @@
   - **Host Kick Ability**: Host can kick disruptive participants with real-time room notification.
   - **Tab Closure Warning**: `beforeunload` guard prevents accidental browser tab closing.
 
-### 4. Phase 4 — Voice Speech-to-Text (`useVoiceRecognition.ts`) (Completed ✅)
-- Browser-native Web Speech API (`webkitSpeechRecognition`) in Chrome.
-- Real-time interim speech transcripts with auto-send on speech finalization.
-- Voice badge indicator (`🎙`) on transcribed messages.
-- Automatic error recovery and mic permission handling.
+---
 
-### 5. Phase 5 — WebRTC Peer-to-Peer Video & Audio (`useWebRTC.ts`, `VideoOverlay.tsx`) (Completed ✅)
-- **Peer-to-Peer Mesh**: Real-time video/audio streaming between up to 5 participants.
-- **Socket.IO Signaling Relay**: Backend `socketHandler.js` relays SDP offers/answers and ICE candidates without media touching the server.
-- **Floating Glassmorphism Video UI**:
-  - Draggable video tiles with mirrored self-view and avatar fallback when camera is off.
-  - Safe docking on the top-right to keep Excalidraw and Code Editor tools 100% accessible.
-  - Floating call control bar docked in the header with camera/mic toggles and leave call button.
-  - **Mic-Sharing Coordination**: Automatically coordinates microphone access between WebRTC call audio and Web Speech API transcription.
-  - **Production Future-Proofing**: TURN server configuration documented and commented for future cloud deployment.
+### 4. Phase 4 — Unified Microphone & Voice Speech-to-Text (⚠️ Partially Incomplete)
 
-### 6. Phase 6 — HTTPS Development & Local Network Connectivity (Completed ✅)
-- **Local HTTPS Certificates**: Dedicated RSA-2048 development SSL certificates with Subject Alternative Names (SANs) for `localhost`, `127.0.0.1`, `0.0.0.0`, and active Wi-Fi LAN IP in `frontend/.cert/cert.pem`.
-- **Vite Proxying**: Vite configured to proxy `/api` (REST) and `/socket.io` (WSS) to `http://localhost:3001`, eliminating mixed-content errors and firewall obstacles across devices on the same Wi-Fi / Hotspot.
-- **Responsive Layout Safeguards**: Chat sidebar and buttons isolated with explicit z-indexing (`z-index: 15`), ensuring they are never covered or blocked on smaller laptop screens.
+- **Implemented Functionality**:
+  - Master microphone toggle in header controlling both WebRTC audio capture and speech recognition.
+  - Auto-submission of finalized speech transcripts into chat with `🎙` badge.
+- **Known Limitations & Failure Points**:
+  - **Remote Device Speech Recognition Failure**: Chrome's `webkitSpeechRecognition` relies on Google Cloud speech servers. When running on secondary laptops or remote tunnels (e.g. Cloudflare tunnel), the recognition engine frequently reports `no-speech` or `network` errors and fails to transcribe voice audio.
+  - **Browser Dependency**: Only functions reliably on Google Chrome desktop under direct localhost; Safari and Firefox lack native support for `webkitSpeechRecognition`.
 
-### 7. Phase 7 — ML Intelligence Engine & Post-Session Report (Foundation Completed ✅)
+---
+
+### 5. Phase 5 — WebRTC Video/Audio Streaming (⚠️ Unfinished / Known Issues)
+
+> [!WARNING]
+> Multi-device WebRTC video and audio transmission across remote laptops/tunnels is currently **incomplete**. While local self-views render and peer signaling connects, remote peer video streams fail to render across devices (e.g. Host cannot view Jhon Doe's video even when turned on), and audio is also not being streamed.
+
+#### Observed Diagnostic Symptoms (From Browser Console Logs)
+
+1. **Asymmetric Track Delivery**:
+   - Host (e.g. Manish) creates offer, attaches webcam track, and sends to Callee (Jhon Doe).
+   - Jhon Doe receives remote video/audio from Manish.
+   - When Jhon Doe subsequently turns ON webcam, Jhon Doe updates transceiver sender (`Video sender updated for Manish`) and sends an SDP answer.
+   - However, Host (Manish) never triggers an `ontrack` event for Jhon Doe's track because Jhon Doe is an answerer and cannot unilaterally initiate a renegotiated SDP offer under the deterministic caller model.
+2. **Offer/Answer Signaling Desynchronization**:
+   - Console logs frequently show `Queued negotiation with Peer; current state is stable` or `Received renegotiate request` loops when multiple peers toggle devices simultaneously.
+3. **Tunneling & Symmetric NAT Traversal Blockage**:
+   - Cloudflare Tunnel (`cloudflared tunnel --url http://localhost:3001`) only tunnels HTTP/WebSocket traffic (TCP port 80/443).
+   - Direct WebRTC media packets (UDP RTP/RTCP streams) cannot flow through an HTTP tunnel without dedicated, high-throughput TURN relays. Free public TURN servers (OpenRelay) suffer from rate limits and candidate rejections.
+
+#### Architectural Root Causes
+
+- **Mesh Topology Bottleneck ($O(N^2)$)**: In a peer-to-peer mesh, each client must maintain separate bidirectional RTCPeerConnections with every other client. Dynamic track replacement (toggling camera/mic mid-call) creates complex SDP negotiation glare and race conditions across multiple browsers.
+- **Answerer Track Replacement Constraint**: In standard WebRTC, an answerer cannot add new media m-lines in an answer if they were not offered. The caller must renegotiate, but timing mismatches and state conflicts prevent the caller from picking up the new track.
+
+---
+
+### 6. Phase 6 — Multi-Device Remote Tunneling & HTTPS (Completed ✅)
+
+- **Cloudflare Tunnel Support**: Full support for exposing backend/frontend via `cloudflared tunnel --url http://localhost:3001` or Vite proxy.
+- **Local HTTPS Certificates**: Self-signed RSA-2048 SSL certificates in `frontend/.cert/cert.pem` for LAN IP testing (`https://<LAN-IP>:5173`).
+- **Secure Context Compliance**: WebRTC and Web APIs require HTTPS to allow hardware microphone/webcam permissions.
+
+---
+
+### 7. Phase 7 — ML Intelligence Engine & Post-Session Report (Completed ✅)
+
 - **8 Analysis Modules**:
   1. `sentiment.py` — Sentiment scoring and emotional trajectory.
   2. `classifier.py` — Zero-shot message categorization (idea, question, agreement, dispute, etc.).
@@ -79,44 +118,61 @@
   - 2D force-directed communication graph.
   - Individual contribution radar/bar charts.
   - Strengths & Improvement recommendations.
+- **Validation Suite (`test_pipeline.py`)**: 9/9 benchmark tests passing across all collaboration profiles.
 
 ---
 
-## 🚀 Next Focus: ML Pipeline Improvisation & Accuracy Tuning
+## 🛠️ How to Run the Project (Local & Cloudflare Tunnel)
 
-| Focus Area | Goal | Key Actions |
-|---|---|---|
-| **1. Seed Dataset Calibration** | Benchmark against all 4 scenarios | Run `test_pipeline.py` against `balanced_team`, `one_dominant`, `stuck_then_recovered`, and `highly_exploratory` to ensure metrics match expected behavioral profiles. |
-| **2. Stuck Detection Tuning** | Reduce false positives & improve recovery detection | Fine-tune the 4-signal weights (`similarity_spike: 0.35`, `sentiment_drop: 0.25`, `no_new_clusters: 0.25`, `question_ratio: 0.15`) and 60s window threshold. |
-| **3. Contribution Equity Refinement** | Balance multi-modal contributions | Weigh chat messages, speech transcripts, code edits, and whiteboard strokes appropriately in the Gini calculation. |
-| **4. Zero-Shot Prompt & Classification Polish** | Better category separation | Refine candidate labels and confidence thresholds in `classifier.py` for collaboration-specific phrases. |
-| **5. Insights & Summary Generation** | Context-rich qualitative feedback | Enhance rule-based heuristics in `summary.py` to provide tailored recommendations based on detected bottlenecks. |
+### 1. Start MongoDB
 
----
+Ensure MongoDB is running locally:
 
-## 🛠️ How to Run Locally (HTTPS & Multi-Device Enabled)
+```bash
+mongod
+# or start via Windows Services / Docker
+```
 
-1. **Backend Server**:
-   ```bash
-   cd backend
-   npm run dev
-   ```
-   *(Listens on `http://localhost:3001` and binds to `0.0.0.0`)*
+### 2. Start Backend Server (Node.js)
 
-2. **Frontend Dev Server**:
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-   *(Listens on `https://localhost:5173` and `https://<YOUR_WIFI_IP>:5173` with auto-proxy to backend)*
+```bash
+cd backend
+npm install
+npm run dev
+```
 
-3. **Python ML Service**:
-   ```bash
-   cd ml-service
-   python app.py
-   ```
-   *(Listens on `http://localhost:5001`)*
+_(Runs on `http://localhost:3001`)_
 
-4. **MongoDB**:
-   Running locally on `mongodb://localhost:27017/collab-lens`.
+### 3. Start Frontend Dev Server (React/Vite)
 
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+_(Runs on `http://localhost:5173` or `https://localhost:5173`)_
+
+### 4. Start Python ML Intelligence Service
+
+```bash
+cd ml-service
+python -m venv venv
+# Windows: venv\Scripts\activate
+# Mac/Linux: source venv/bin/activate
+pip install -r requirements.txt
+python app.py
+```
+
+_(Runs on `http://localhost:5000`)_
+
+### 5. Expose for Multi-Device Remote Testing (Cloudflare Tunnel)
+
+To connect multiple laptops / remote devices over the internet:
+
+```bash
+# In a new terminal window:
+cloudflared tunnel --url http://localhost:3001
+```
+
+_(Copy the generated HTTPS trycloudflare.com URL and share it with participants to join the collaborative workspace)_

@@ -1,0 +1,1138 @@
+{
+  "communicationNetwork": {
+    "density": 0.75,
+    "edges": [
+      {
+        "from": "user_priya",
+        "fromName": "Priya",
+        "to": "user_raj",
+        "toName": "Raj",
+        "weight": 2
+      },
+      {
+        "from": "user_priya",
+        "fromName": "Priya",
+        "to": "user_meera",
+        "toName": "Meera",
+        "weight": 1
+      },
+      {
+        "from": "user_anil",
+        "fromName": "Anil",
+        "to": "user_raj",
+        "toName": "Raj",
+        "weight": 3
+      },
+      {
+        "from": "user_anil",
+        "fromName": "Anil",
+        "to": "user_meera",
+        "toName": "Meera",
+        "weight": 1
+      },
+      {
+        "from": "user_meera",
+        "fromName": "Meera",
+        "to": "user_raj",
+        "toName": "Raj",
+        "weight": 4
+      },
+      {
+        "from": "user_meera",
+        "fromName": "Meera",
+        "to": "user_anil",
+        "toName": "Anil",
+        "weight": 1
+      },
+      {
+        "from": "user_raj",
+        "fromName": "Raj",
+        "to": "user_meera",
+        "toName": "Meera",
+        "weight": 4
+      },
+      {
+        "from": "user_raj",
+        "fromName": "Raj",
+        "to": "user_anil",
+        "toName": "Anil",
+        "weight": 3
+      },
+      {
+        "from": "user_raj",
+        "fromName": "Raj",
+        "to": "user_priya",
+        "toName": "Priya",
+        "weight": 3
+      }
+    ],
+    "hubMember": {
+      "betweennessCentrality": 0.4167,
+      "name": "Raj",
+      "userId": "user_raj"
+    },
+    "isolatedMembers": [],
+    "nodePositions": {
+      "user_anil": [
+        0.2737,
+        1.0
+      ],
+      "user_meera": [
+        0.824,
+        -0.1692
+      ],
+      "user_priya": [
+        -0.9753,
+        -0.7934
+      ],
+      "user_raj": [
+        -0.1224,
+        -0.0374
+      ]
+    },
+    "nodes": [
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 1.0,
+        "isIsolated": 0,
+        "messageCount": 3,
+        "name": "Priya",
+        "position": [
+          -0.9753,
+          -0.7934
+        ],
+        "userId": "user_priya"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 1.3333,
+        "isIsolated": 0,
+        "messageCount": 3,
+        "name": "Anil",
+        "position": [
+          0.2737,
+          1.0
+        ],
+        "userId": "user_anil"
+      },
+      {
+        "betweennessCentrality": 0.0833,
+        "degreeCentrality": 1.6667,
+        "isIsolated": 0,
+        "messageCount": 4,
+        "name": "Meera",
+        "position": [
+          0.824,
+          -0.1692
+        ],
+        "userId": "user_meera"
+      },
+      {
+        "betweennessCentrality": 0.4167,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 22,
+        "name": "Raj",
+        "position": [
+          -0.1224,
+          -0.0374
+        ],
+        "userId": "user_raj"
+      }
+    ],
+    "pattern": "Healthy Mesh",
+    "reciprocity": 0.8889,
+    "strongestLink": {
+      "from": "Meera",
+      "to": "Raj",
+      "weight": 4
+    }
+  },
+  "contributions": {
+    "byMember": [
+      {
+        "agreements": 1,
+        "avgSentiment": 0.585,
+        "buildingOnOthers": 17,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 22,
+        "name": "Raj",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.368,
+        "questions": 4,
+        "sentimentLabel": "neutral",
+        "textMessages": 22,
+        "userId": "user_raj",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 0,
+        "avgSentiment": 0.588,
+        "buildingOnOthers": 2,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 4,
+        "name": "Meera",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.35,
+        "questions": 2,
+        "sentimentLabel": "neutral",
+        "textMessages": 4,
+        "userId": "user_meera",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 1,
+        "avgSentiment": 0.625,
+        "buildingOnOthers": 1,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 3,
+        "name": "Anil",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.267,
+        "questions": 1,
+        "sentimentLabel": "positive",
+        "textMessages": 3,
+        "userId": "user_anil",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 0,
+        "avgSentiment": 0.733,
+        "buildingOnOthers": 2,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 3,
+        "name": "Priya",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.367,
+        "questions": 1,
+        "sentimentLabel": "positive",
+        "textMessages": 3,
+        "userId": "user_priya",
+        "voiceMessages": 0
+      }
+    ],
+    "equity": 0.547,
+    "equityLabel": "Somewhat Unequal",
+    "totalMessages": 32
+  },
+  "explorationScore": {
+    "distribution": {
+      "0": 16,
+      "1": 2,
+      "2": 2
+    },
+    "interpretation": "Team discussed 3 approaches but spent disproportionate time on some. Consider more balanced exploration.",
+    "label": "Moderate Exploration",
+    "n_clusters": 3,
+    "score": 0.582
+  },
+  "ideaClusters": {
+    "clusters": [
+      {
+        "clusterId": 0,
+        "contributorCounts": {
+          "user_meera": 2,
+          "user_priya": 1,
+          "user_raj": 13
+        },
+        "firstMentionTime": "2026-03-15T14:00:05.000Z",
+        "messageCount": 16,
+        "messageIndices": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19,
+          20,
+          21,
+          23,
+          28,
+          30
+        ],
+        "originatorName": "Raj",
+        "originatorUserId": "user_raj",
+        "percentage": 50.0,
+        "representativeText": "Then restaurants. GET /api/restaurants for listing, GET /api/restaurants/:id for details, POST /api/restaurants for adding new ones."
+      },
+      {
+        "clusterId": 1,
+        "contributorCounts": {
+          "user_anil": 1,
+          "user_raj": 1
+        },
+        "firstMentionTime": "2026-03-15T14:05:05.000Z",
+        "messageCount": 2,
+        "messageIndices": [
+          16,
+          17
+        ],
+        "originatorName": "Anil",
+        "originatorUserId": "user_anil",
+        "percentage": 6.2,
+        "representativeText": "Should we use geospatial queries for that? Like MongoDB's $near?"
+      },
+      {
+        "clusterId": 2,
+        "contributorCounts": {
+          "user_raj": 2
+        },
+        "firstMentionTime": "2026-03-15T14:08:05.000Z",
+        "messageCount": 2,
+        "messageIndices": [
+          25,
+          26
+        ],
+        "originatorName": "Raj",
+        "originatorUserId": "user_raj",
+        "percentage": 6.2,
+        "representativeText": "Middleware checks the role claim in the JWT. Restaurant endpoints only accessible to restaurant_owner role."
+      }
+    ],
+    "n_clusters": 3,
+    "noise_count": 12
+  },
+  "messages": [
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5274,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.75,
+      "sequenceNumber": 1,
+      "source": "text",
+      "text": "OK so we need to design a REST API for a food delivery app. Let me start.",
+      "timestamp": "2026-03-15T14:00:05.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4659,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.625,
+      "sequenceNumber": 2,
+      "source": "text",
+      "text": "First, we need a users endpoint. POST /api/users for registration, GET /api/users/:id for profile.",
+      "timestamp": "2026-03-15T14:00:20.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4253,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5682,
+      "sequenceNumber": 3,
+      "source": "text",
+      "text": "Then restaurants. GET /api/restaurants for listing, GET /api/restaurants/:id for details, POST /api/restaurants for adding new ones.",
+      "timestamp": "2026-03-15T14:00:40.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5206,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 4,
+      "source": "text",
+      "text": "That makes sense.",
+      "timestamp": "2026-03-15T14:00:55.000Z",
+      "userId": "user_meera",
+      "userName": "Meera"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5398,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 5,
+      "source": "text",
+      "text": "For orders, we need POST /api/orders to create, GET /api/orders/:id to track, PUT /api/orders/:id/status to update.",
+      "timestamp": "2026-03-15T14:01:15.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.445,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.675,
+      "sequenceNumber": 6,
+      "source": "text",
+      "text": "The menu should be nested under restaurants. GET /api/restaurants/:id/menu returns the full menu.",
+      "timestamp": "2026-03-15T14:01:35.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "agreement",
+      "messageTypeConfidence": 0.4488,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6429,
+      "sequenceNumber": 7,
+      "source": "text",
+      "text": "Yeah, that's right.",
+      "timestamp": "2026-03-15T14:01:50.000Z",
+      "userId": "user_anil",
+      "userName": "Anil"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5584,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 8,
+      "source": "text",
+      "text": "For authentication, JWT tokens. Login returns a token, every subsequent request includes it in the Authorization header.",
+      "timestamp": "2026-03-15T14:02:10.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5888,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 9,
+      "source": "text",
+      "text": "Payment integration would be POST /api/payments with the order ID and payment method. Stripe or Razorpay.",
+      "timestamp": "2026-03-15T14:02:30.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.3662,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.85,
+      "sequenceNumber": 10,
+      "source": "text",
+      "text": "Sounds good to me.",
+      "timestamp": "2026-03-15T14:02:45.000Z",
+      "userId": "user_priya",
+      "userName": "Priya"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5642,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 11,
+      "source": "text",
+      "text": "For real-time tracking, we could use WebSockets. The delivery person sends location updates, and the customer gets them in real-time.",
+      "timestamp": "2026-03-15T14:03:05.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5276,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.7,
+      "sequenceNumber": 12,
+      "source": "text",
+      "text": "The order status flow would be: placed → confirmed → preparing → picked_up → delivered.",
+      "timestamp": "2026-03-15T14:03:25.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.5904,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.7,
+      "sequenceNumber": 13,
+      "source": "text",
+      "text": "What about cancellation? Can users cancel after the order is confirmed?",
+      "timestamp": "2026-03-15T14:03:45.000Z",
+      "userId": "user_meera",
+      "userName": "Meera"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.6536,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6167,
+      "sequenceNumber": 14,
+      "source": "text",
+      "text": "Good question. Cancel should only work before 'preparing' status. POST /api/orders/:id/cancel with a check on current status.",
+      "timestamp": "2026-03-15T14:04:05.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5662,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 15,
+      "source": "text",
+      "text": "We also need ratings. POST /api/orders/:id/rating after delivery. Rating for both restaurant and delivery person.",
+      "timestamp": "2026-03-15T14:04:25.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.4246,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 16,
+      "source": "text",
+      "text": "Search endpoint: GET /api/restaurants/search?q=pizza&lat=28.7&lng=77.1&radius=5km",
+      "timestamp": "2026-03-15T14:04:45.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.3705,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.55,
+      "sequenceNumber": 17,
+      "source": "text",
+      "text": "Should we use geospatial queries for that? Like MongoDB's $near?",
+      "timestamp": "2026-03-15T14:05:05.000Z",
+      "userId": "user_anil",
+      "userName": "Anil"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4356,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.925,
+      "sequenceNumber": 18,
+      "source": "text",
+      "text": "Yes, MongoDB with 2dsphere index would work perfectly for location-based search. Good point Anil.",
+      "timestamp": "2026-03-15T14:05:25.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4087,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.4667,
+      "sequenceNumber": 19,
+      "source": "text",
+      "text": "For the response format, every API should return { success: boolean, data: {}, error: string }. Consistent structure.",
+      "timestamp": "2026-03-15T14:05:45.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4159,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 20,
+      "source": "text",
+      "text": "Pagination for listings: GET /api/restaurants?page=1&limit=20&sort=rating. Default limit 20, max 50.",
+      "timestamp": "2026-03-15T14:06:05.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.4718,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 21,
+      "source": "text",
+      "text": "What about filtering restaurants by cuisine type?",
+      "timestamp": "2026-03-15T14:06:25.000Z",
+      "userId": "user_priya",
+      "userName": "Priya"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.3692,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 22,
+      "source": "text",
+      "text": "Add it as query param: GET /api/restaurants?cuisine=indian&veg=true&priceRange=low. Multiple filters.",
+      "timestamp": "2026-03-15T14:06:45.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.2967,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.725,
+      "sequenceNumber": 23,
+      "source": "text",
+      "text": "Rate limiting is important too. 100 requests per minute per user. 429 Too Many Requests if exceeded.",
+      "timestamp": "2026-03-15T14:07:05.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "agreement",
+      "messageTypeConfidence": 0.4999,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 24,
+      "source": "text",
+      "text": "For the delivery person app, separate endpoints: GET /api/delivery/available-orders, POST /api/delivery/accept/:orderId.",
+      "timestamp": "2026-03-15T14:07:25.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.3943,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.65,
+      "sequenceNumber": 25,
+      "source": "text",
+      "text": "Should delivery persons have their own authentication or share the same system?",
+      "timestamp": "2026-03-15T14:07:45.000Z",
+      "userId": "user_meera",
+      "userName": "Meera"
+    },
+    {
+      "clusterLabel": 2,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.592,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 26,
+      "source": "text",
+      "text": "Same JWT system but with role-based access control. Roles: customer, restaurant_owner, delivery_person, admin.",
+      "timestamp": "2026-03-15T14:08:05.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": 2,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.2905,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5938,
+      "sequenceNumber": 27,
+      "source": "text",
+      "text": "Middleware checks the role claim in the JWT. Restaurant endpoints only accessible to restaurant_owner role.",
+      "timestamp": "2026-03-15T14:08:25.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5565,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6833,
+      "sequenceNumber": 28,
+      "source": "text",
+      "text": "Makes sense. Clean architecture.",
+      "timestamp": "2026-03-15T14:08:40.000Z",
+      "userId": "user_anil",
+      "userName": "Anil"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5761,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6292,
+      "sequenceNumber": 29,
+      "source": "text",
+      "text": "I think we've covered the main endpoints. Let me write the full API spec in the code editor.",
+      "timestamp": "2026-03-15T14:09:00.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.6267,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.85,
+      "sequenceNumber": 30,
+      "source": "text",
+      "text": "Looks comprehensive. Good job Raj.",
+      "timestamp": "2026-03-15T14:09:15.000Z",
+      "userId": "user_priya",
+      "userName": "Priya"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.7129,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 31,
+      "source": "text",
+      "text": "Yeah, this is a solid API design.",
+      "timestamp": "2026-03-15T14:09:30.000Z",
+      "userId": "user_meera",
+      "userName": "Meera"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4028,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.6,
+      "sequenceNumber": 32,
+      "source": "text",
+      "text": "Thanks team. Let me also add webhook endpoints for payment confirmations and order status changes.",
+      "timestamp": "2026-03-15T14:09:45.000Z",
+      "userId": "user_raj",
+      "userName": "Raj"
+    }
+  ],
+  "meta": {
+    "analysisTimeSeconds": 9.13,
+    "device": "cuda",
+    "messageCount": 32,
+    "participantCount": 4
+  },
+  "stuckPeriods": [],
+  "summary": {
+    "collectiveIntelligenceIndicators": {
+      "avgContributionQuality": 0.338,
+      "communicationDensity": 0.75,
+      "contributionEquity": 0.547,
+      "explorationScore": 0.582,
+      "stuckRecoveryRate": 1.0
+    },
+    "insights": {
+      "improvements": [
+        "Continue practicing collaborative problem-solving to develop stronger team dynamics."
+      ],
+      "keyMoments": [],
+      "strengths": [
+        "Communication network is a healthy mesh (density: 0.75). All members are well-connected and communicating freely.",
+        "Strongest communication link: Meera ↔ Raj (4 interactions).",
+        "No stuck periods detected. Team maintained productive momentum throughout the session."
+      ]
+    },
+    "overallScore": 0.683,
+    "scoreLabel": "Good"
+  },
+  "timeline": [
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 30,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.688,
+      "startTime": 0,
+      "windowIndex": 0
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_meera",
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 60,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.534,
+      "startTime": 30,
+      "windowIndex": 1
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 90,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 60,
+      "windowIndex": 2
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_anil",
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "agreement": 1,
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 120,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Convergence",
+      "sentiment": 0.659,
+      "startTime": 90,
+      "windowIndex": 3
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [],
+      "endTime": 150,
+      "messageCount": 2,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 120,
+      "windowIndex": 4
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_priya"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 180,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.85,
+      "startTime": 150,
+      "windowIndex": 5
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 210,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.6,
+      "startTime": 180,
+      "windowIndex": 6
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_meera"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 240,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.7,
+      "startTime": 210,
+      "windowIndex": 7
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 270,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.558,
+      "startTime": 240,
+      "windowIndex": 8
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 300,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 270,
+      "windowIndex": 9
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_anil",
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 330,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.738,
+      "startTime": 300,
+      "windowIndex": 10
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 360,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.467,
+      "startTime": 330,
+      "windowIndex": 11
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_priya",
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 390,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 360,
+      "windowIndex": 12
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 420,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 390,
+      "windowIndex": 13
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "agreement": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 450,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.613,
+      "startTime": 420,
+      "windowIndex": 14
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_meera"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [],
+      "endTime": 480,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.65,
+      "startTime": 450,
+      "windowIndex": 15
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        2
+      ],
+      "endTime": 510,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.547,
+      "startTime": 480,
+      "windowIndex": 16
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_anil",
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 540,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.656,
+      "startTime": 510,
+      "windowIndex": 17
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_priya",
+        "user_meera"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 570,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.675,
+      "startTime": 540,
+      "windowIndex": 18
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_raj"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 600,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.6,
+      "startTime": 570,
+      "windowIndex": 19
+    }
+  ]
+}

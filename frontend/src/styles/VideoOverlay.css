@@ -13,25 +13,25 @@
   position: fixed;
   width: 180px;
   height: 135px;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  background: #1a1a2e;
+  background: #121224;
   border: 2px solid rgba(99, 102, 241, 0.3);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    0 10px 32px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
   cursor: grab;
   pointer-events: auto;
   user-select: none;
   z-index: 101;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
   animation: tileAppear 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes tileAppear {
   from {
     opacity: 0;
-    transform: scale(0.8) translateY(10px);
+    transform: scale(0.85) translateY(12px);
   }
   to {
     opacity: 1;
@@ -40,30 +40,39 @@
 }
 
 .video-tile:hover {
-  border-color: rgba(99, 102, 241, 0.6);
+  border-color: rgba(99, 102, 241, 0.7);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 0 20px rgba(99, 102, 241, 0.15);
+    0 14px 44px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 0 24px rgba(99, 102, 241, 0.25);
 }
 
 .video-tile:active {
   cursor: grabbing;
 }
 
+/* Speaking active border pulse */
+.video-tile.speaking {
+  border-color: #10b981;
+  box-shadow:
+    0 10px 32px rgba(0, 0, 0, 0.45),
+    0 0 16px rgba(16, 185, 129, 0.4),
+    0 0 0 1px rgba(16, 185, 129, 0.3) inset;
+}
+
 /* Local tile (self-view) — smaller with distinct border */
 .video-tile-local {
   width: 160px;
   height: 120px;
-  border-color: rgba(16, 185, 129, 0.4);
+  border-color: rgba(16, 185, 129, 0.5);
 }
 
 .video-tile-local:hover {
-  border-color: rgba(16, 185, 129, 0.7);
+  border-color: rgba(16, 185, 129, 0.85);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 0 20px rgba(16, 185, 129, 0.15);
+    0 14px 44px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 0 24px rgba(16, 185, 129, 0.25);
 }
 
 /* ─── Video Element ─── */
@@ -72,42 +81,40 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transform: scaleX(-1); /* Mirror self-view */
-  background: #0f0f1a;
+  background: #0d0d1a;
 }
 
-/* ─── Camera-off Avatar ─── */
+/* Mirror self-view */
+.video-mirror {
+  transform: scaleX(-1);
+}
+
+/* ─── Camera-off Avatar Fallback ─── */
 .video-avatar {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1e1e3a 0%, #2d2b55 100%);
+  background: #16162a;
   position: relative;
 }
 
-.video-avatar::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at center,
-    rgba(99, 102, 241, 0.12) 0%,
-    transparent 70%
-  );
-}
-
-.video-avatar-letter {
-  font-size: 2.2rem;
+.video-avatar-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  position: relative;
-  z-index: 1;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ─── Name Tag ─── */
+/* ─── Name Tag & Audio Status ─── */
 .video-name-tag {
   position: absolute;
   bottom: 0;
@@ -115,7 +122,7 @@
   right: 0;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   padding: 4px 8px;
   background: linear-gradient(
     to top,
@@ -131,30 +138,47 @@
   text-overflow: ellipsis;
 }
 
-.mic-off-icon {
-  flex-shrink: 0;
-  animation: micOffPulse 2s infinite ease-in-out;
+.video-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-@keyframes micOffPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+/* Mic Indicator Icon */
+.mic-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mic-indicator.muted {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+.mic-indicator.active {
+  background: rgba(16, 185, 129, 0.25);
+  color: #10b981;
 }
 
 /* ─── Drag Handle ─── */
 .video-drag-hint {
   position: absolute;
-  top: 4px;
-  right: 6px;
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.25);
+  top: 5px;
+  right: 7px;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.3);
   letter-spacing: 1px;
   pointer-events: none;
   transition: color 0.2s;
 }
 
 .video-tile:hover .video-drag-hint {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* ─── Floating Control Bar ─── */
@@ -255,8 +279,10 @@
     height: 82px;
   }
 
-  .video-avatar-letter {
-    font-size: 1.4rem;
+  .video-avatar-circle {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
   }
 
   .video-controls-bar {
@@ -277,4 +303,3 @@
     width: 36px;
   }
 }
-

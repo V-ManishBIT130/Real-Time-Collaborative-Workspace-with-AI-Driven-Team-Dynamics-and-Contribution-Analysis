@@ -92,6 +92,11 @@
   font-weight: 500;
 }
 
+.gmeet-toast-error .gmeet-toast-action {
+  color: #b91c1c;
+  font-weight: 500;
+}
+
 .gmeet-toast-close {
   background: none;
   border: none;

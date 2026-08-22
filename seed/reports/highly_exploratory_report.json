@@ -1,0 +1,1351 @@
+{
+  "communicationNetwork": {
+    "density": 1.0,
+    "edges": [
+      {
+        "from": "user_vik",
+        "fromName": "Vik",
+        "to": "user_maya",
+        "toName": "Maya",
+        "weight": 9
+      },
+      {
+        "from": "user_vik",
+        "fromName": "Vik",
+        "to": "user_arjun",
+        "toName": "Arjun",
+        "weight": 4
+      },
+      {
+        "from": "user_vik",
+        "fromName": "Vik",
+        "to": "user_zara",
+        "toName": "Zara",
+        "weight": 5
+      },
+      {
+        "from": "user_zara",
+        "fromName": "Zara",
+        "to": "user_vik",
+        "toName": "Vik",
+        "weight": 10
+      },
+      {
+        "from": "user_zara",
+        "fromName": "Zara",
+        "to": "user_maya",
+        "toName": "Maya",
+        "weight": 6
+      },
+      {
+        "from": "user_zara",
+        "fromName": "Zara",
+        "to": "user_arjun",
+        "toName": "Arjun",
+        "weight": 4
+      },
+      {
+        "from": "user_arjun",
+        "fromName": "Arjun",
+        "to": "user_zara",
+        "toName": "Zara",
+        "weight": 9
+      },
+      {
+        "from": "user_arjun",
+        "fromName": "Arjun",
+        "to": "user_vik",
+        "toName": "Vik",
+        "weight": 3
+      },
+      {
+        "from": "user_arjun",
+        "fromName": "Arjun",
+        "to": "user_maya",
+        "toName": "Maya",
+        "weight": 5
+      },
+      {
+        "from": "user_maya",
+        "fromName": "Maya",
+        "to": "user_arjun",
+        "toName": "Arjun",
+        "weight": 9
+      },
+      {
+        "from": "user_maya",
+        "fromName": "Maya",
+        "to": "user_zara",
+        "toName": "Zara",
+        "weight": 4
+      },
+      {
+        "from": "user_maya",
+        "fromName": "Maya",
+        "to": "user_vik",
+        "toName": "Vik",
+        "weight": 1
+      }
+    ],
+    "hubMember": {
+      "betweennessCentrality": 0.0,
+      "name": "Vik",
+      "userId": "user_vik"
+    },
+    "isolatedMembers": [],
+    "nodePositions": {
+      "user_arjun": [
+        -0.0545,
+        -1.0
+      ],
+      "user_maya": [
+        -1.0,
+        0.1238
+      ],
+      "user_vik": [
+        0.2699,
+        0.8912
+      ],
+      "user_zara": [
+        0.7846,
+        -0.015
+      ]
+    },
+    "nodes": [
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 10,
+        "name": "Vik",
+        "position": [
+          0.2699,
+          0.8912
+        ],
+        "userId": "user_vik"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 10,
+        "name": "Zara",
+        "position": [
+          0.7846,
+          -0.015
+        ],
+        "userId": "user_zara"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 9,
+        "name": "Arjun",
+        "position": [
+          -0.0545,
+          -1.0
+        ],
+        "userId": "user_arjun"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 9,
+        "name": "Maya",
+        "position": [
+          -1.0,
+          0.1238
+        ],
+        "userId": "user_maya"
+      }
+    ],
+    "pattern": "Healthy Mesh",
+    "reciprocity": 1.0,
+    "strongestLink": {
+      "from": "Zara",
+      "to": "Vik",
+      "weight": 10
+    }
+  },
+  "contributions": {
+    "byMember": [
+      {
+        "agreements": 0,
+        "avgSentiment": 0.557,
+        "buildingOnOthers": 9,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 10,
+        "name": "Zara",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.39,
+        "questions": 1,
+        "sentimentLabel": "neutral",
+        "textMessages": 10,
+        "userId": "user_zara",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 0,
+        "avgSentiment": 0.588,
+        "buildingOnOthers": 8,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 10,
+        "name": "Vik",
+        "newIdeas": 1,
+        "offTopic": 0,
+        "qualityScore": 0.4,
+        "questions": 1,
+        "sentimentLabel": "neutral",
+        "textMessages": 10,
+        "userId": "user_vik",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 1,
+        "avgSentiment": 0.585,
+        "buildingOnOthers": 5,
+        "coordination": 0,
+        "disagreements": 2,
+        "messageCount": 9,
+        "name": "Maya",
+        "newIdeas": 1,
+        "offTopic": 0,
+        "qualityScore": 0.311,
+        "questions": 0,
+        "sentimentLabel": "neutral",
+        "textMessages": 9,
+        "userId": "user_maya",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 0,
+        "avgSentiment": 0.574,
+        "buildingOnOthers": 6,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 9,
+        "name": "Arjun",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.367,
+        "questions": 3,
+        "sentimentLabel": "neutral",
+        "textMessages": 9,
+        "userId": "user_arjun",
+        "voiceMessages": 0
+      }
+    ],
+    "equity": 0.974,
+    "equityLabel": "Highly Equitable",
+    "totalMessages": 38
+  },
+  "explorationScore": {
+    "distribution": {
+      "0": 15,
+      "1": 5
+    },
+    "interpretation": "Team thoroughly explored 2 distinct approaches with well-balanced discussion across all clusters.",
+    "label": "High Exploration",
+    "n_clusters": 2,
+    "score": 0.811
+  },
+  "ideaClusters": {
+    "clusters": [
+      {
+        "clusterId": 0,
+        "contributorCounts": {
+          "user_arjun": 5,
+          "user_maya": 3,
+          "user_vik": 3,
+          "user_zara": 4
+        },
+        "firstMentionTime": "2026-03-15T18:00:05.000Z",
+        "messageCount": 15,
+        "messageIndices": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7,
+          8,
+          9,
+          10,
+          19,
+          23,
+          29,
+          31,
+          32,
+          34
+        ],
+        "originatorName": "Zara",
+        "originatorUserId": "user_zara",
+        "percentage": 39.5,
+        "representativeText": "Third priority: code splitting and image optimization. Reduces the 3MB JS and 5MB images."
+      },
+      {
+        "clusterId": 1,
+        "contributorCounts": {
+          "user_arjun": 1,
+          "user_maya": 2,
+          "user_vik": 1,
+          "user_zara": 1
+        },
+        "firstMentionTime": "2026-03-15T18:03:35.000Z",
+        "messageCount": 5,
+        "messageIndices": [
+          11,
+          12,
+          13,
+          14,
+          30
+        ],
+        "originatorName": "Arjun",
+        "originatorUserId": "user_arjun",
+        "percentage": 13.2,
+        "representativeText": "Agreed. Then database indexing and Redis caching. That fixes the 3-second DB queries."
+      }
+    ],
+    "n_clusters": 2,
+    "noise_count": 18
+  },
+  "messages": [
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5539,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 1,
+      "source": "text",
+      "text": "The web app loads in 8 seconds and we need to get it under 2. Let's brainstorm all possible optimizations.",
+      "timestamp": "2026-03-15T18:00:05.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4091,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.6,
+      "sequenceNumber": 2,
+      "source": "text",
+      "text": "Starting with the frontend — 3MB JavaScript bundle is huge. We need code splitting and tree shaking.",
+      "timestamp": "2026-03-15T18:00:22.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.3615,
+      "sentimentLabel": "negative",
+      "sentimentScore": 0.375,
+      "sequenceNumber": 3,
+      "source": "text",
+      "text": "Also lazy loading routes. Users shouldn't download the admin dashboard code when visiting the homepage.",
+      "timestamp": "2026-03-15T18:00:40.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.6312,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 4,
+      "source": "text",
+      "text": "What about the images? 5MB of images is massive. WebP format can cut that by 50-60%.",
+      "timestamp": "2026-03-15T18:00:58.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.3917,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.675,
+      "sequenceNumber": 5,
+      "source": "text",
+      "text": "Good point. Plus responsive images with srcset — serve smaller images to mobile devices.",
+      "timestamp": "2026-03-15T18:01:15.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "new idea",
+      "messageTypeConfidence": 0.4116,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5417,
+      "sequenceNumber": 6,
+      "source": "text",
+      "text": "Let me think about a different approach. What about server-side rendering? That would give instant first paint.",
+      "timestamp": "2026-03-15T18:01:35.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.341,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.85,
+      "sequenceNumber": 7,
+      "source": "text",
+      "text": "SSR is good but it shifts the load to the server. With 15 API calls on page load, the server would need to handle all of those.",
+      "timestamp": "2026-03-15T18:01:55.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.4391,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 8,
+      "source": "text",
+      "text": "What if we reduce those 15 API calls? Maybe aggregate them into 2-3 BFF (Backend for Frontend) endpoints.",
+      "timestamp": "2026-03-15T18:02:15.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4578,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.625,
+      "sequenceNumber": 9,
+      "source": "text",
+      "text": "Or GraphQL! One query to fetch exactly what the page needs instead of 15 REST calls.",
+      "timestamp": "2026-03-15T18:02:35.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4996,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.6,
+      "sequenceNumber": 10,
+      "source": "text",
+      "text": "GraphQL would solve the over-fetching problem too. REST endpoints return too much data we don't need.",
+      "timestamp": "2026-03-15T18:02:55.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "new idea",
+      "messageTypeConfidence": 0.4532,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 11,
+      "source": "text",
+      "text": "But GraphQL has a learning curve and adds complexity. Maybe BFF is simpler for now.",
+      "timestamp": "2026-03-15T18:03:15.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4904,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.7,
+      "sequenceNumber": 12,
+      "source": "text",
+      "text": "Let's move to the backend. The 3-second database queries are a huge bottleneck. We need indexing.",
+      "timestamp": "2026-03-15T18:03:35.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.7304,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5875,
+      "sequenceNumber": 13,
+      "source": "text",
+      "text": "Definitely indexing. But also query optimization. Use EXPLAIN to find full table scans and fix them.",
+      "timestamp": "2026-03-15T18:03:55.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.5007,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.55,
+      "sequenceNumber": 14,
+      "source": "text",
+      "text": "What about adding a caching layer? Redis for frequently accessed data. Cache invalidation on writes.",
+      "timestamp": "2026-03-15T18:04:15.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5394,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 15,
+      "source": "text",
+      "text": "Redis could cut DB load by 80%. Set TTL based on how often data changes. Product listings can be cached for 5 minutes.",
+      "timestamp": "2026-03-15T18:04:35.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.6735,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.75,
+      "sequenceNumber": 16,
+      "source": "text",
+      "text": "Now let's think about infrastructure. CDN for static assets — images, JS, CSS all served from edge locations.",
+      "timestamp": "2026-03-15T18:04:55.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.3638,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 17,
+      "source": "text",
+      "text": "CloudFront or Cloudflare. Cache headers set properly. Immutable assets with content hash in filenames.",
+      "timestamp": "2026-03-15T18:05:15.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.554,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.4881,
+      "sequenceNumber": 18,
+      "source": "text",
+      "text": "HTTP/2 multiplexing would help too. Multiple resources over single connection instead of 6 parallel connections.",
+      "timestamp": "2026-03-15T18:05:35.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.3744,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.75,
+      "sequenceNumber": 19,
+      "source": "text",
+      "text": "Don't forget gzip or brotli compression. Brotli gives 20% better compression than gzip for text assets.",
+      "timestamp": "2026-03-15T18:05:55.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.5871,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5278,
+      "sequenceNumber": 20,
+      "source": "text",
+      "text": "What about preloading critical resources? rel=preload for the main CSS and critical JS chunks.",
+      "timestamp": "2026-03-15T18:06:15.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5831,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.55,
+      "sequenceNumber": 21,
+      "source": "text",
+      "text": "And preconnect to third-party domains. If we have analytics, fonts, CDNs — DNS resolution happens early.",
+      "timestamp": "2026-03-15T18:06:35.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.3006,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 22,
+      "source": "text",
+      "text": "Service workers! Cache the app shell and critical data. The second visit would be instant.",
+      "timestamp": "2026-03-15T18:06:55.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5268,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6917,
+      "sequenceNumber": 23,
+      "source": "text",
+      "text": "That's a PWA approach. Good for repeat visitors but doesn't help first load much.",
+      "timestamp": "2026-03-15T18:07:15.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5412,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.6,
+      "sequenceNumber": 24,
+      "source": "text",
+      "text": "True. For first load, we should think about critical CSS — inline the above-the-fold styles.",
+      "timestamp": "2026-03-15T18:07:35.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.6651,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 25,
+      "source": "text",
+      "text": "Let me also suggest connection pooling for database. pg-pool or HikariCP depending on stack.",
+      "timestamp": "2026-03-15T18:07:55.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5385,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.625,
+      "sequenceNumber": 26,
+      "source": "text",
+      "text": "And N+1 query detection. ORMs love generating N+1 queries. Eager loading with proper joins.",
+      "timestamp": "2026-03-15T18:08:15.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.6231,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.4375,
+      "sequenceNumber": 27,
+      "source": "text",
+      "text": "For images specifically, lazy loading with Intersection Observer API. Only load images as they scroll into view.",
+      "timestamp": "2026-03-15T18:08:35.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5654,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5875,
+      "sequenceNumber": 28,
+      "source": "text",
+      "text": "Placeholder blur images too. Show a tiny blurred version while the full image loads. Like Medium does.",
+      "timestamp": "2026-03-15T18:08:55.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.5115,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.55,
+      "sequenceNumber": 29,
+      "source": "text",
+      "text": "OK let's prioritize all these ideas. What gives us the biggest improvement with least effort?",
+      "timestamp": "2026-03-15T18:09:15.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5709,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.8083,
+      "sequenceNumber": 30,
+      "source": "text",
+      "text": "CDN plus compression is the quickest win. Just configuration changes, no code needed. Easily saves 2-3 seconds.",
+      "timestamp": "2026-03-15T18:09:35.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "agreement",
+      "messageTypeConfidence": 0.5024,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 31,
+      "source": "text",
+      "text": "Agreed. Then database indexing and Redis caching. That fixes the 3-second DB queries.",
+      "timestamp": "2026-03-15T18:09:55.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.3372,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 32,
+      "source": "text",
+      "text": "Third priority: code splitting and image optimization. Reduces the 3MB JS and 5MB images.",
+      "timestamp": "2026-03-15T18:10:15.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4287,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.58,
+      "sequenceNumber": 33,
+      "source": "text",
+      "text": "And consolidating API calls is medium effort, high impact. BFF approach rather than GraphQL for speed.",
+      "timestamp": "2026-03-15T18:10:35.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.2424,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6625,
+      "sequenceNumber": 34,
+      "source": "text",
+      "text": "SSR and service workers are longer-term investments. Important but not the first thing to tackle.",
+      "timestamp": "2026-03-15T18:10:55.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.7161,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6583,
+      "sequenceNumber": 35,
+      "source": "text",
+      "text": "So our strategy: Quick wins (CDN, compression) → Backend fixes (DB, caching) → Frontend optimization (splitting, images) → Architecture (BFF, SSR).",
+      "timestamp": "2026-03-15T18:11:15.000Z",
+      "userId": "user_maya",
+      "userName": "Maya"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5976,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 36,
+      "source": "text",
+      "text": "That's a solid four-phase plan. Each phase should bring measurable improvement we can track.",
+      "timestamp": "2026-03-15T18:11:35.000Z",
+      "userId": "user_arjun",
+      "userName": "Arjun"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5817,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 37,
+      "source": "text",
+      "text": "We should set up Lighthouse CI to track performance scores automatically. Core Web Vitals as KPIs.",
+      "timestamp": "2026-03-15T18:11:55.000Z",
+      "userId": "user_zara",
+      "userName": "Zara"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.2472,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 38,
+      "source": "text",
+      "text": "LCP under 2.5s, FID under 100ms, CLS under 0.1. Those are the targets Google recommends.",
+      "timestamp": "2026-03-15T18:12:10.000Z",
+      "userId": "user_vik",
+      "userName": "Vik"
+    }
+  ],
+  "meta": {
+    "analysisTimeSeconds": 11.59,
+    "device": "cuda",
+    "messageCount": 38,
+    "participantCount": 4
+  },
+  "stuckPeriods": [
+    {
+      "avgSentiment": 0.575,
+      "duration": 60,
+      "endTime": 180,
+      "messageCount": 3,
+      "recovery": {
+        "text": "But GraphQL has a learning curve and adds complexity. Maybe BFF is simpler for now.",
+        "timeAfterStuck": 10.0,
+        "timestamp": "2026-03-15T18:03:15.000Z",
+        "type": "new idea",
+        "userId": "user_maya",
+        "userName": "Maya"
+      },
+      "signals": {
+        "messageGap": 0.667,
+        "noNewClusters": 1.0,
+        "semanticSimilarity": 0.785,
+        "sentimentDrop": 0
+      },
+      "startTime": 120,
+      "stuckScore": 0.625
+    }
+  ],
+  "summary": {
+    "collectiveIntelligenceIndicators": {
+      "avgContributionQuality": 0.367,
+      "communicationDensity": 1.0,
+      "contributionEquity": 0.974,
+      "explorationScore": 0.811,
+      "stuckRecoveryRate": 1.0
+    },
+    "insights": {
+      "improvements": [
+        "Continue practicing collaborative problem-solving to develop stronger team dynamics."
+      ],
+      "keyMoments": [
+        {
+          "description": "Maya broke a stuck period with a \"new idea\" at 180s",
+          "time": 180,
+          "type": "breakthrough",
+          "userId": "user_maya",
+          "userName": "Maya"
+        }
+      ],
+      "strengths": [
+        "Excellent contribution equity (97%). All team members participated meaningfully.",
+        "Team explored 2 distinct approaches (exploration score: 0.81). Good divergent thinking before convergence.",
+        "Communication network is a healthy mesh (density: 1.00). All members are well-connected and communicating freely.",
+        "Strongest communication link: Zara ↔ Vik (10 interactions).",
+        "Team hit 1 stuck period(s) but recovered from all of them. Strong resilience and problem-solving ability."
+      ]
+    },
+    "overallScore": 0.851,
+    "scoreLabel": "Excellent"
+  },
+  "timeline": [
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_vik",
+        "user_zara"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 30,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.55,
+      "startTime": 0,
+      "windowIndex": 0
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_arjun",
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "disagreement": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 60,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.438,
+      "startTime": 30,
+      "windowIndex": 1
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_zara"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 90,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.675,
+      "startTime": 60,
+      "windowIndex": 2
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_vik",
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "disagreement": 1,
+        "new idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 120,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.696,
+      "startTime": 90,
+      "windowIndex": 3
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_arjun"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 150,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Stuck",
+      "sentiment": 0.5,
+      "startTime": 120,
+      "windowIndex": 4
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_vik",
+        "user_zara"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 180,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Stuck",
+      "sentiment": 0.613,
+      "startTime": 150,
+      "windowIndex": 5
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "new idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 210,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Brainstorming",
+      "sentiment": 0.5,
+      "startTime": 180,
+      "windowIndex": 6
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_zara",
+        "user_arjun"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 240,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.644,
+      "startTime": 210,
+      "windowIndex": 7
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_vik"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 270,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.55,
+      "startTime": 240,
+      "windowIndex": 8
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_arjun",
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 300,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.625,
+      "startTime": 270,
+      "windowIndex": 9
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_zara"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 330,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 300,
+      "windowIndex": 10
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_vik",
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [],
+      "endTime": 360,
+      "messageCount": 2,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.619,
+      "startTime": 330,
+      "windowIndex": 11
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_arjun"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 390,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.528,
+      "startTime": 360,
+      "windowIndex": 12
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_vik",
+        "user_zara"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [],
+      "endTime": 420,
+      "messageCount": 2,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.525,
+      "startTime": 390,
+      "windowIndex": 13
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 450,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.692,
+      "startTime": 420,
+      "windowIndex": 14
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_zara",
+        "user_arjun"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 480,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.55,
+      "startTime": 450,
+      "windowIndex": 15
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_vik"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 510,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.625,
+      "startTime": 480,
+      "windowIndex": 16
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_arjun",
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [],
+      "endTime": 540,
+      "messageCount": 2,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.512,
+      "startTime": 510,
+      "windowIndex": 17
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_zara"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [],
+      "endTime": 570,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.55,
+      "startTime": 540,
+      "windowIndex": 18
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_vik",
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "agreement": 1,
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0,
+        1
+      ],
+      "endTime": 600,
+      "messageCount": 2,
+      "newClusters": 2,
+      "phase": "Convergence",
+      "sentiment": 0.654,
+      "startTime": 570,
+      "windowIndex": 19
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_arjun"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 630,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 600,
+      "windowIndex": 20
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_vik",
+        "user_zara"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 660,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.621,
+      "startTime": 630,
+      "windowIndex": 21
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_maya"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 690,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.658,
+      "startTime": 660,
+      "windowIndex": 22
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_zara",
+        "user_arjun"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [],
+      "endTime": 720,
+      "messageCount": 2,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 690,
+      "windowIndex": 23
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_vik"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 750,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 720,
+      "windowIndex": 24
+    }
+  ]
+}

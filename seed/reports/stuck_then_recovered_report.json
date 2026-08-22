@@ -1,0 +1,1292 @@
+{
+  "communicationNetwork": {
+    "density": 1.0,
+    "edges": [
+      {
+        "from": "user_liam",
+        "fromName": "Liam",
+        "to": "user_sofia",
+        "toName": "Sofia",
+        "weight": 6
+      },
+      {
+        "from": "user_liam",
+        "fromName": "Liam",
+        "to": "user_noah",
+        "toName": "Noah",
+        "weight": 6
+      },
+      {
+        "from": "user_liam",
+        "fromName": "Liam",
+        "to": "user_emma",
+        "toName": "Emma",
+        "weight": 4
+      },
+      {
+        "from": "user_emma",
+        "fromName": "Emma",
+        "to": "user_liam",
+        "toName": "Liam",
+        "weight": 7
+      },
+      {
+        "from": "user_emma",
+        "fromName": "Emma",
+        "to": "user_sofia",
+        "toName": "Sofia",
+        "weight": 3
+      },
+      {
+        "from": "user_emma",
+        "fromName": "Emma",
+        "to": "user_noah",
+        "toName": "Noah",
+        "weight": 6
+      },
+      {
+        "from": "user_sofia",
+        "fromName": "Sofia",
+        "to": "user_noah",
+        "toName": "Noah",
+        "weight": 6
+      },
+      {
+        "from": "user_sofia",
+        "fromName": "Sofia",
+        "to": "user_emma",
+        "toName": "Emma",
+        "weight": 4
+      },
+      {
+        "from": "user_sofia",
+        "fromName": "Sofia",
+        "to": "user_liam",
+        "toName": "Liam",
+        "weight": 2
+      },
+      {
+        "from": "user_noah",
+        "fromName": "Noah",
+        "to": "user_emma",
+        "toName": "Emma",
+        "weight": 5
+      },
+      {
+        "from": "user_noah",
+        "fromName": "Noah",
+        "to": "user_liam",
+        "toName": "Liam",
+        "weight": 6
+      },
+      {
+        "from": "user_noah",
+        "fromName": "Noah",
+        "to": "user_sofia",
+        "toName": "Sofia",
+        "weight": 4
+      }
+    ],
+    "hubMember": {
+      "betweennessCentrality": 0.0,
+      "name": "Liam",
+      "userId": "user_liam"
+    },
+    "isolatedMembers": [],
+    "nodePositions": {
+      "user_emma": [
+        0.7665,
+        0.3505
+      ],
+      "user_liam": [
+        -0.1864,
+        0.7473
+      ],
+      "user_noah": [
+        -0.7863,
+        -0.0978
+      ],
+      "user_sofia": [
+        0.2062,
+        -1.0
+      ]
+    },
+    "nodes": [
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 9,
+        "name": "Liam",
+        "position": [
+          -0.1864,
+          0.7473
+        ],
+        "userId": "user_liam"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 8,
+        "name": "Emma",
+        "position": [
+          0.7665,
+          0.3505
+        ],
+        "userId": "user_emma"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 8,
+        "name": "Sofia",
+        "position": [
+          0.2062,
+          -1.0
+        ],
+        "userId": "user_sofia"
+      },
+      {
+        "betweennessCentrality": 0.0,
+        "degreeCentrality": 2.0,
+        "isIsolated": 0,
+        "messageCount": 8,
+        "name": "Noah",
+        "position": [
+          -0.7863,
+          -0.0978
+        ],
+        "userId": "user_noah"
+      }
+    ],
+    "pattern": "Healthy Mesh",
+    "reciprocity": 1.0,
+    "strongestLink": {
+      "from": "Emma",
+      "to": "Liam",
+      "weight": 7
+    }
+  },
+  "contributions": {
+    "byMember": [
+      {
+        "agreements": 0,
+        "avgSentiment": 0.611,
+        "buildingOnOthers": 4,
+        "coordination": 0,
+        "disagreements": 3,
+        "messageCount": 9,
+        "name": "Liam",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.278,
+        "questions": 2,
+        "sentimentLabel": "positive",
+        "textMessages": 9,
+        "userId": "user_liam",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 0,
+        "avgSentiment": 0.548,
+        "buildingOnOthers": 5,
+        "coordination": 0,
+        "disagreements": 0,
+        "messageCount": 8,
+        "name": "Emma",
+        "newIdeas": 1,
+        "offTopic": 0,
+        "qualityScore": 0.387,
+        "questions": 2,
+        "sentimentLabel": "neutral",
+        "textMessages": 7,
+        "userId": "user_emma",
+        "voiceMessages": 1
+      },
+      {
+        "agreements": 0,
+        "avgSentiment": 0.593,
+        "buildingOnOthers": 3,
+        "coordination": 0,
+        "disagreements": 3,
+        "messageCount": 8,
+        "name": "Sofia",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.262,
+        "questions": 2,
+        "sentimentLabel": "neutral",
+        "textMessages": 8,
+        "userId": "user_sofia",
+        "voiceMessages": 0
+      },
+      {
+        "agreements": 0,
+        "avgSentiment": 0.701,
+        "buildingOnOthers": 6,
+        "coordination": 0,
+        "disagreements": 2,
+        "messageCount": 8,
+        "name": "Noah",
+        "newIdeas": 0,
+        "offTopic": 0,
+        "qualityScore": 0.325,
+        "questions": 0,
+        "sentimentLabel": "positive",
+        "textMessages": 8,
+        "userId": "user_noah",
+        "voiceMessages": 0
+      }
+    ],
+    "equity": 0.977,
+    "equityLabel": "Highly Equitable",
+    "totalMessages": 33
+  },
+  "explorationScore": {
+    "distribution": {
+      "0": 27,
+      "1": 2
+    },
+    "interpretation": "Team discussed 2 approaches but spent disproportionate time on some. Consider more balanced exploration.",
+    "label": "Moderate Exploration",
+    "n_clusters": 2,
+    "score": 0.362
+  },
+  "ideaClusters": {
+    "clusters": [
+      {
+        "clusterId": 0,
+        "contributorCounts": {
+          "user_emma": 7,
+          "user_liam": 6,
+          "user_noah": 7,
+          "user_sofia": 7
+        },
+        "firstMentionTime": "2026-03-15T16:00:05.000Z",
+        "messageCount": 27,
+        "messageIndices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          7,
+          8,
+          9,
+          10,
+          11,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          27,
+          28,
+          29,
+          30,
+          32
+        ],
+        "originatorName": "Emma",
+        "originatorUserId": "user_emma",
+        "percentage": 81.8,
+        "representativeText": "The tradeoffs are obvious. Trie wins on prefix search. HashMap is O(1) but can't do prefix. Sorted array needs binary search."
+      },
+      {
+        "clusterId": 1,
+        "contributorCounts": {
+          "user_liam": 1,
+          "user_sofia": 1
+        },
+        "firstMentionTime": "2026-03-15T16:01:35.000Z",
+        "messageCount": 2,
+        "messageIndices": [
+          5,
+          6
+        ],
+        "originatorName": "Liam",
+        "originatorUserId": "user_liam",
+        "percentage": 6.1,
+        "representativeText": "That's true but Tries are still good. We can optimize with compressed tries or radix trees."
+      }
+    ],
+    "n_clusters": 2,
+    "noise_count": 4
+  },
+  "messages": [
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4646,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 1,
+      "source": "text",
+      "text": "So we need to choose between Trie, HashMap, and Sorted Array for search autocomplete with 1 million words.",
+      "timestamp": "2026-03-15T16:00:05.000Z",
+      "userId": "user_emma",
+      "userName": "Emma"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.6895,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 2,
+      "source": "text",
+      "text": "I think Trie is the obvious choice for autocomplete. It's literally designed for prefix matching.",
+      "timestamp": "2026-03-15T16:00:20.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.8956,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 3,
+      "source": "text",
+      "text": "Trie makes sense. Each node represents a character, and we traverse until we find all completions.",
+      "timestamp": "2026-03-15T16:00:38.000Z",
+      "userId": "user_sofia",
+      "userName": "Sofia"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.752,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.85,
+      "sequenceNumber": 4,
+      "source": "text",
+      "text": "Yeah Trie is good for this. Prefix lookup is O(m) where m is the prefix length.",
+      "timestamp": "2026-03-15T16:00:55.000Z",
+      "userId": "user_noah",
+      "userName": "Noah"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4517,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.58,
+      "sequenceNumber": 5,
+      "source": "text",
+      "text": "But wait, with 1 million words, the memory usage of a Trie could be really high. Each node has up to 26 children.",
+      "timestamp": "2026-03-15T16:01:15.000Z",
+      "userId": "user_emma",
+      "userName": "Emma"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.3362,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6062,
+      "sequenceNumber": 6,
+      "source": "text",
+      "text": "That's true but Tries are still good. We can optimize with compressed tries or radix trees.",
+      "timestamp": "2026-03-15T16:01:35.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": 1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.5508,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.55,
+      "sequenceNumber": 7,
+      "source": "text",
+      "text": "Compressed tries help with memory. But is the implementation complexity worth it?",
+      "timestamp": "2026-03-15T16:01:55.000Z",
+      "userId": "user_sofia",
+      "userName": "Sofia"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.8291,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6361,
+      "sequenceNumber": 8,
+      "source": "text",
+      "text": "I still think a regular Trie is fine. Memory is cheap. The prefix lookup speed is what matters.",
+      "timestamp": "2026-03-15T16:02:15.000Z",
+      "userId": "user_noah",
+      "userName": "Noah"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.425,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6969,
+      "sequenceNumber": 9,
+      "source": "text",
+      "text": "But are we sure Trie is the best? We haven't really considered the other options yet.",
+      "timestamp": "2026-03-15T16:02:35.000Z",
+      "userId": "user_emma",
+      "userName": "Emma"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.6068,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5312,
+      "sequenceNumber": 10,
+      "source": "text",
+      "text": "Trie is designed for this exact use case. Why would we need to look at other options?",
+      "timestamp": "2026-03-15T16:02:55.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.445,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.475,
+      "sequenceNumber": 11,
+      "source": "text",
+      "text": "Liam has a point. Tries are the standard for autocomplete.",
+      "timestamp": "2026-03-15T16:03:12.000Z",
+      "userId": "user_sofia",
+      "userName": "Sofia"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.3953,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6429,
+      "sequenceNumber": 12,
+      "source": "text",
+      "text": "Yeah, I think we should just go with Trie. It's the right tool for the job.",
+      "timestamp": "2026-03-15T16:03:30.000Z",
+      "userId": "user_noah",
+      "userName": "Noah"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.7225,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.75,
+      "sequenceNumber": 13,
+      "source": "text",
+      "text": "OK so Trie it is. Let's write the implementation. Insert and search methods.",
+      "timestamp": "2026-03-15T16:03:48.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "question",
+      "messageTypeConfidence": 0.4758,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 14,
+      "source": "text",
+      "text": "I guess. But the question asked us to discuss tradeoffs between all three options.",
+      "timestamp": "2026-03-15T16:04:05.000Z",
+      "userId": "user_emma",
+      "userName": "Emma"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.4424,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.575,
+      "sequenceNumber": 15,
+      "source": "text",
+      "text": "The tradeoffs are obvious. Trie wins on prefix search. HashMap is O(1) but can't do prefix. Sorted array needs binary search.",
+      "timestamp": "2026-03-15T16:04:25.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.3686,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6429,
+      "sequenceNumber": 16,
+      "source": "text",
+      "text": "Right, HashMap can't do prefix matching at all without iterating everything.",
+      "timestamp": "2026-03-15T16:04:42.000Z",
+      "userId": "user_sofia",
+      "userName": "Sofia"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4255,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 17,
+      "source": "text",
+      "text": "And sorted array with binary search is O(log n) for finding the start but then linear for collecting results.",
+      "timestamp": "2026-03-15T16:04:58.000Z",
+      "userId": "user_noah",
+      "userName": "Noah"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.4251,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.55,
+      "sequenceNumber": 18,
+      "source": "text",
+      "text": "So Trie is clearly the winner. Can we move on to implementation?",
+      "timestamp": "2026-03-15T16:05:15.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "new idea",
+      "messageTypeConfidence": 0.4717,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 19,
+      "source": "voice",
+      "text": "Wait, I just thought of something. What about a HashMap where keys are all possible prefixes? That would give O(1) prefix lookup.",
+      "timestamp": "2026-03-15T16:05:50.000Z",
+      "userId": "user_emma",
+      "userName": "Emma"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.808,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.8125,
+      "sequenceNumber": 20,
+      "source": "text",
+      "text": "Oh that's interesting! Pre-compute all prefixes and map them to lists of completions.",
+      "timestamp": "2026-03-15T16:06:10.000Z",
+      "userId": "user_noah",
+      "userName": "Noah"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4405,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6667,
+      "sequenceNumber": 21,
+      "source": "text",
+      "text": "That would use more memory but lookups would be constant time. With 1M words, how many prefixes would there be?",
+      "timestamp": "2026-03-15T16:06:30.000Z",
+      "userId": "user_sofia",
+      "userName": "Sofia"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.611,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.425,
+      "sequenceNumber": 22,
+      "source": "text",
+      "text": "If average word length is 8 characters, that's about 8 million prefix entries. Each pointing to a list of completions.",
+      "timestamp": "2026-03-15T16:06:50.000Z",
+      "userId": "user_emma",
+      "userName": "Emma"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.4887,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6111,
+      "sequenceNumber": 23,
+      "source": "text",
+      "text": "OK I take back what I said. The prefix-HashMap approach is actually really clever for a read-heavy system.",
+      "timestamp": "2026-03-15T16:07:10.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.5017,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5,
+      "sequenceNumber": 24,
+      "source": "text",
+      "text": "Yeah, autocomplete is definitely read-heavy. You build the index once and serve millions of queries.",
+      "timestamp": "2026-03-15T16:07:30.000Z",
+      "userId": "user_noah",
+      "userName": "Noah"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.5215,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5833,
+      "sequenceNumber": 25,
+      "source": "text",
+      "text": "So the tradeoff is: Trie uses less memory but Trie traversal per query, HashMap uses more memory but O(1) per query.",
+      "timestamp": "2026-03-15T16:07:50.000Z",
+      "userId": "user_sofia",
+      "userName": "Sofia"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4887,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6167,
+      "sequenceNumber": 26,
+      "source": "text",
+      "text": "And sorted array is the middle ground — moderate memory, O(log n + k) lookup. Good for memory-constrained environments.",
+      "timestamp": "2026-03-15T16:08:10.000Z",
+      "userId": "user_emma",
+      "userName": "Emma"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4728,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.75,
+      "sequenceNumber": 27,
+      "source": "text",
+      "text": "This is a much better analysis now. Each approach has legitimate use cases depending on constraints.",
+      "timestamp": "2026-03-15T16:08:30.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.558,
+      "sentimentLabel": "positive",
+      "sentimentScore": 1.0,
+      "sequenceNumber": 28,
+      "source": "text",
+      "text": "For a cloud service with plenty of RAM, the prefix-HashMap is probably best. For mobile or embedded, Trie or sorted array.",
+      "timestamp": "2026-03-15T16:08:50.000Z",
+      "userId": "user_noah",
+      "userName": "Noah"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "question",
+      "messageTypeConfidence": 0.4153,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.625,
+      "sequenceNumber": 29,
+      "source": "text",
+      "text": "Should we also discuss the sorted array approach more? With binary search to find lower and upper bounds of the prefix?",
+      "timestamp": "2026-03-15T16:09:10.000Z",
+      "userId": "user_sofia",
+      "userName": "Sofia"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.4775,
+      "sentimentLabel": "neutral",
+      "sentimentScore": 0.5625,
+      "sequenceNumber": 30,
+      "source": "text",
+      "text": "Yes! Java's Arrays.binarySearch or C++'s lower_bound. You find the first word starting with the prefix and iterate until the prefix no longer matches.",
+      "timestamp": "2026-03-15T16:09:30.000Z",
+      "userId": "user_emma",
+      "userName": "Emma"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.7547,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.625,
+      "sequenceNumber": 31,
+      "source": "text",
+      "text": "That's elegant. And the memory overhead is just the array itself — no extra data structure. Smallest memory footprint.",
+      "timestamp": "2026-03-15T16:09:48.000Z",
+      "userId": "user_liam",
+      "userName": "Liam"
+    },
+    {
+      "clusterLabel": -1,
+      "messageType": "building on idea",
+      "messageTypeConfidence": 0.376,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.6652,
+      "sequenceNumber": 32,
+      "source": "text",
+      "text": "Great, so our recommendation should be context-dependent. No single right answer — that's the whole point of the problem.",
+      "timestamp": "2026-03-15T16:10:05.000Z",
+      "userId": "user_noah",
+      "userName": "Noah"
+    },
+    {
+      "clusterLabel": 0,
+      "messageType": "disagreement",
+      "messageTypeConfidence": 0.2469,
+      "sentimentLabel": "positive",
+      "sentimentScore": 0.7,
+      "sequenceNumber": 33,
+      "source": "text",
+      "text": "Nice recovery team. We almost just picked Trie without thinking. Emma's HashMap idea really opened up the discussion.",
+      "timestamp": "2026-03-15T16:10:20.000Z",
+      "userId": "user_sofia",
+      "userName": "Sofia"
+    }
+  ],
+  "meta": {
+    "analysisTimeSeconds": 12.18,
+    "device": "cuda",
+    "messageCount": 33,
+    "participantCount": 4
+  },
+  "stuckPeriods": [
+    {
+      "avgSentiment": 0.621,
+      "duration": 60,
+      "endTime": 180,
+      "messageCount": 3,
+      "recovery": {
+        "text": "Liam has a point. Tries are the standard for autocomplete.",
+        "timeAfterStuck": 7.0,
+        "timestamp": "2026-03-15T16:03:12.000Z",
+        "type": "building on idea",
+        "userId": "user_sofia",
+        "userName": "Sofia"
+      },
+      "signals": {
+        "messageGap": 0.667,
+        "noNewClusters": 1.0,
+        "semanticSimilarity": 0.809,
+        "sentimentDrop": 0
+      },
+      "startTime": 120,
+      "stuckScore": 0.633
+    },
+    {
+      "avgSentiment": 0.635,
+      "duration": 60,
+      "endTime": 420,
+      "messageCount": 3,
+      "recovery": {
+        "text": "OK I take back what I said. The prefix-HashMap approach is actually really clever for a read-heavy system.",
+        "timeAfterStuck": 5.0,
+        "timestamp": "2026-03-15T16:07:10.000Z",
+        "type": "disagreement",
+        "userId": "user_liam",
+        "userName": "Liam"
+      },
+      "signals": {
+        "messageGap": 0.667,
+        "noNewClusters": 1.0,
+        "semanticSimilarity": 0.802,
+        "sentimentDrop": 0
+      },
+      "startTime": 360,
+      "stuckScore": 0.631
+    },
+    {
+      "avgSentiment": 0.729,
+      "duration": 60,
+      "endTime": 570,
+      "messageCount": 3,
+      "recovery": {
+        "text": "That's elegant. And the memory overhead is just the array itself — no extra data structure. Smallest memory footprint.",
+        "timeAfterStuck": 13.0,
+        "timestamp": "2026-03-15T16:09:48.000Z",
+        "type": "building on idea",
+        "userId": "user_liam",
+        "userName": "Liam"
+      },
+      "signals": {
+        "messageGap": 0.667,
+        "noNewClusters": 1.0,
+        "semanticSimilarity": 0.742,
+        "sentimentDrop": 0
+      },
+      "startTime": 510,
+      "stuckScore": 0.61
+    }
+  ],
+  "summary": {
+    "collectiveIntelligenceIndicators": {
+      "avgContributionQuality": 0.313,
+      "communicationDensity": 1.0,
+      "contributionEquity": 0.977,
+      "explorationScore": 0.362,
+      "stuckRecoveryRate": 1.0
+    },
+    "insights": {
+      "improvements": [
+        "Continue practicing collaborative problem-solving to develop stronger team dynamics."
+      ],
+      "keyMoments": [
+        {
+          "description": "Sofia broke a stuck period with a \"building on idea\" at 180s",
+          "time": 180,
+          "type": "breakthrough",
+          "userId": "user_sofia",
+          "userName": "Sofia"
+        },
+        {
+          "description": "Liam broke a stuck period with a \"disagreement\" at 420s",
+          "time": 420,
+          "type": "breakthrough",
+          "userId": "user_liam",
+          "userName": "Liam"
+        },
+        {
+          "description": "Liam broke a stuck period with a \"building on idea\" at 570s",
+          "time": 570,
+          "type": "breakthrough",
+          "userId": "user_liam",
+          "userName": "Liam"
+        }
+      ],
+      "strengths": [
+        "Excellent contribution equity (98%). All team members participated meaningfully.",
+        "Communication network is a healthy mesh (density: 1.00). All members are well-connected and communicating freely.",
+        "Strongest communication link: Emma ↔ Liam (7 interactions).",
+        "Team hit 3 stuck period(s) but recovered from all of them. Strong resilience and problem-solving ability."
+      ]
+    },
+    "overallScore": 0.732,
+    "scoreLabel": "Good"
+  },
+  "timeline": [
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_liam",
+        "user_emma"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 30,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.5,
+      "startTime": 0,
+      "windowIndex": 0
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_noah",
+        "user_sofia"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 60,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.675,
+      "startTime": 30,
+      "windowIndex": 1
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_emma"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 90,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.58,
+      "startTime": 60,
+      "windowIndex": 2
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_liam",
+        "user_sofia"
+      ],
+      "classificationBreakdown": {
+        "disagreement": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        1
+      ],
+      "endTime": 120,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.578,
+      "startTime": 90,
+      "windowIndex": 3
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_noah"
+      ],
+      "classificationBreakdown": {
+        "disagreement": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 150,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Stuck",
+      "sentiment": 0.636,
+      "startTime": 120,
+      "windowIndex": 4
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_liam",
+        "user_emma"
+      ],
+      "classificationBreakdown": {
+        "question": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 180,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Stuck",
+      "sentiment": 0.614,
+      "startTime": 150,
+      "windowIndex": 5
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_noah",
+        "user_sofia"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "disagreement": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 210,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.559,
+      "startTime": 180,
+      "windowIndex": 6
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_liam"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [],
+      "endTime": 240,
+      "messageCount": 1,
+      "newClusters": 0,
+      "phase": "Discussion",
+      "sentiment": 0.75,
+      "startTime": 210,
+      "windowIndex": 7
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_liam",
+        "user_emma"
+      ],
+      "classificationBreakdown": {
+        "disagreement": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 270,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.537,
+      "startTime": 240,
+      "windowIndex": 8
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_noah",
+        "user_sofia"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "disagreement": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 300,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.571,
+      "startTime": 270,
+      "windowIndex": 9
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_liam"
+      ],
+      "classificationBreakdown": {
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 330,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.55,
+      "startTime": 300,
+      "windowIndex": 10
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_emma"
+      ],
+      "classificationBreakdown": {
+        "new idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 360,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Brainstorming",
+      "sentiment": 0.5,
+      "startTime": 330,
+      "windowIndex": 11
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_noah",
+        "user_sofia"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 390,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Stuck",
+      "sentiment": 0.74,
+      "startTime": 360,
+      "windowIndex": 12
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_emma"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 420,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Stuck",
+      "sentiment": 0.425,
+      "startTime": 390,
+      "windowIndex": 13
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_liam",
+        "user_noah"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "disagreement": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 450,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.556,
+      "startTime": 420,
+      "windowIndex": 14
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_sofia"
+      ],
+      "classificationBreakdown": {
+        "disagreement": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 480,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.583,
+      "startTime": 450,
+      "windowIndex": 15
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_liam",
+        "user_emma"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 2
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 510,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.683,
+      "startTime": 480,
+      "windowIndex": 16
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_noah"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 540,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Stuck",
+      "sentiment": 1.0,
+      "startTime": 510,
+      "windowIndex": 17
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_emma",
+        "user_sofia"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "question": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 570,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Stuck",
+      "sentiment": 0.594,
+      "startTime": 540,
+      "windowIndex": 18
+    },
+    {
+      "activeParticipants": 1,
+      "activeUserIds": [
+        "user_liam"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 600,
+      "messageCount": 1,
+      "newClusters": 1,
+      "phase": "Discussion",
+      "sentiment": 0.625,
+      "startTime": 570,
+      "windowIndex": 19
+    },
+    {
+      "activeParticipants": 2,
+      "activeUserIds": [
+        "user_noah",
+        "user_sofia"
+      ],
+      "classificationBreakdown": {
+        "building on idea": 1,
+        "disagreement": 1
+      },
+      "clusterIds": [
+        0
+      ],
+      "endTime": 630,
+      "messageCount": 2,
+      "newClusters": 1,
+      "phase": "Debate",
+      "sentiment": 0.683,
+      "startTime": 600,
+      "windowIndex": 20
+    }
+  ]
+}

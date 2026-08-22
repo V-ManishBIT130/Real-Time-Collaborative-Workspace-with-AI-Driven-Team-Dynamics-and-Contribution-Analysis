@@ -17,8 +17,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 interface UseVoiceRecognitionOptions {
   /** Called when a transcript is produced. isFinal=true means committed result. */
   onResult?: (transcript: string, isFinal: boolean) => void;
-  /** Called on recognition error with the raw error code string. */
-  onError?: (error: string) => void;
+  /** Called on recognition error with the raw code and a user-facing explanation. */
+  onError?: (error: string, message: string) => void;
   /** Enable continuous recognition (auto-restarts on natural pause). Default: true */
   continuous?: boolean;
   /** BCP-47 language code. Default: 'en-IN' */
@@ -157,12 +157,12 @@ export function useVoiceRecognition(options: UseVoiceRecognitionOptions = {}) {
       if (!isMountedRef.current) return;
 
       const errorCode: string = event.error;
-      console.warn('[VoiceRecognition] Error:', errorCode, event.message || '');
 
       // ── Transient / ignorable errors ──
       if (errorCode === 'no-speech') {
         // No speech detected during the listening window.
         // Recognition will fire onend next — auto-restart handles it.
+        console.debug('[VoiceRecognition] No speech detected; listening will restart automatically.');
         return;
       }
 
@@ -171,13 +171,15 @@ export function useVoiceRecognition(options: UseVoiceRecognitionOptions = {}) {
         return;
       }
 
+      console.warn('[VoiceRecognition] Error:', errorCode, event.message || '');
+
       // ── Real errors ──
       consecutiveErrorsRef.current++;
 
       const friendlyMessage =
         ERROR_MESSAGES[errorCode] || `Speech recognition error: ${errorCode}`;
       setError(friendlyMessage);
-      optionsRef.current.onError?.(errorCode);
+      optionsRef.current.onError?.(errorCode, friendlyMessage);
 
       // If too many consecutive errors, give up to prevent infinite restart loop
       if (consecutiveErrorsRef.current >= MAX_CONSECUTIVE_ERRORS) {
@@ -286,21 +288,8 @@ export function useVoiceRecognition(options: UseVoiceRecognitionOptions = {}) {
     try {
       recognitionRef.current.start();
     } catch (e: any) {
-      if (e.message?.includes('already started')) {
-        // Recognition already running — abort and retry once
-        try {
-          recognitionRef.current.abort();
-        } catch (_) {}
-        setTimeout(() => {
-          if (!isStoppedByUserRef.current && recognitionRef.current) {
-            try {
-              recognitionRef.current.start();
-            } catch (retryErr: any) {
-              console.warn('[VoiceRecognition] Retry start failed:', retryErr.message);
-              setError('Failed to start speech recognition. Please try again.');
-            }
-          }
-        }, 200);
+      if (e.message?.includes('already started') || e.name === 'InvalidStateError') {
+        setIsListening(true);
       } else {
         console.warn('[VoiceRecognition] Start error:', e.message);
         setError('Failed to start speech recognition. Please try again.');
