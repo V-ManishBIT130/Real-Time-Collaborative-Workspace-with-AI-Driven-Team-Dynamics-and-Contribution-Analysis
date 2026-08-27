@@ -38,7 +38,7 @@ sympy==1.13.1
 textblob==0.20.0
 threadpoolctl==3.6.0
 tokenizers==0.22.2
-torch==2.5.1+cu121
+torch==2.6.0
 tqdm==4.67.3
 transformers==5.8.0
 typer==0.25.1

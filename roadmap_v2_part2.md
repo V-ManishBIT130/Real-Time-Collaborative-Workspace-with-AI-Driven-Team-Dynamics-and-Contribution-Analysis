@@ -635,3 +635,30 @@ Same as Draft 1 — those answers were well-targeted. Add one more:
 
 > **This corrected roadmap should be read alongside `roadmap_review.md`
 > for the full reasoning behind each change.**
+
+---
+
+## APPENDIX — Implementation Status (Updated 2026-08-27)
+
+> This section was added post-implementation to track actual build status against the roadmap plan.
+
+| Phase | Status | Deviations from Plan |
+|---|---|---|
+| Phase 0 — Foundation | ✅ Complete | `contracts.md` was not created as a standalone file; data contracts are implicitly defined in the codebase. Seed data exists in `seed/` with 4 test scenarios. |
+| Phase 1 — Auth + DB | ✅ Complete | Implemented exactly as planned. 6 separate MongoDB collections. JWT + bcrypt. |
+| Phase 2 — Real-Time Core | ✅ Complete | Exceeded plan — added 15s reconnection grace period, host transfer, zombie room cleanup, knock-to-rejoin system. |
+| Phase 3 — Workspace Tools | ✅ Complete | Excalidraw pinned, Monaco multi-language, CSS layout. Added: host kick, tab closure warning. |
+| Phase 4 — ML Pipeline | ✅ Complete | Expanded from 7 to 9 modules. Added `timeline.py`, `contributions.py`, `exploration.py`. `device.py` added for GPU/CPU auto-detection. |
+| Phase 5 — Voice Input | ⚠️ Partial | Works on localhost Chrome. Fails on remote tunnel clients due to Chrome Speech API requiring Google Cloud connectivity. Implemented as `useVoiceRecognition.ts` (not `useVoice` as planned). |
+| Phase 6 — Report Page | ✅ Complete | `Report.tsx` with all planned visualizations (Recharts, force-graph, contribution charts). |
+| Phase 7 — Integration | ✅ Complete | 3-retry backoff, `analysis_pending` status, zombie cleanup every 5 min. |
+| **Phase 8 — Problems Bank** | **❌ Not Implemented** | No `Problem` MongoDB model. `problemText` is a free-text field at room creation, not a curated bank. This is the only unimplemented roadmap phase. |
+| Phase 9 — Polish + Testing | ✅ Mostly Complete | Multi-device WebRTC testing done (2 and 3 devices). ML guard clauses present. Edge cases handled. |
+
+### Additional Features Built (Not in Original Roadmap)
+
+- **WebRTC Full-Mesh Video/Audio** (`useWebRTC.ts`): W3C Perfect Negotiation, multi-STUN/TURN fallback, ICE auto-restart, hardware camera release, muted mic without SDP renegotiation storm.
+- **Professional Video Overlay UI** (`VideoOverlay.tsx`, `VideoOverlay.css`): Glassmorphism tiles, draggable layout, avatar fallback, mute/camera state indicators.
+- **Cloudflare Tunnel Deployment**: Full production build served by backend with CORS auto-detection for `*.trycloudflare.com` origins.
+- **TURN Credential System** (`/api/webrtc/ice-servers`): Supports shared-secret HMAC credentials, static credentials, or OpenRelay fallback.
+

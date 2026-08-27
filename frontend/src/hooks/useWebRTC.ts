@@ -99,6 +99,31 @@ export function useWebRTC({
     window.setTimeout(() => reportedDiagnosticsRef.current.delete(key), 15000);
   }, []);
 
+  // Keep outbound voice bitrate stable to reduce choppy audio on variable links.
+  const tuneAudioSender = useCallback(async (pc: RTCPeerConnection, peerId: string) => {
+    const sender = pc.getSenders().find((s) => s.track?.kind === 'audio');
+    if (!sender) return;
+
+    try {
+      const params = sender.getParameters();
+      const encodings = params.encodings && params.encodings.length > 0
+        ? [...params.encodings]
+        : [{} as RTCRtpEncodingParameters];
+
+      encodings[0] = {
+        ...encodings[0],
+        maxBitrate: 32000,
+      };
+
+      await sender.setParameters({
+        ...params,
+        encodings,
+      });
+    } catch (err: any) {
+      console.debug(`[WebRTC] Audio sender tuning note for ${peerId}:`, err.message);
+    }
+  }, []);
+
   const loadIceServers = useCallback(() => {
     if (!iceServersLoadRef.current) {
       iceServersLoadRef.current = (async () => {
@@ -179,6 +204,8 @@ export function useWebRTC({
       pc.addTransceiver('audio', { direction: 'sendrecv' });
     }
 
+    void tuneAudioSender(pc, peerId);
+
     // Initialize video transceiver with sendrecv
     if (localVideoTrack) {
       pc.addTransceiver(localVideoTrack, { direction: 'sendrecv', streams: [currentStream!] });
@@ -186,35 +213,61 @@ export function useWebRTC({
       pc.addTransceiver('video', { direction: 'sendrecv' });
     }
 
+    // ── Helper: ensure a receiver track is added to the remote streams state ──
+    const syncReceiverTrack = (track: MediaStreamTrack, source: string) => {
+      if (!isMountedRef.current) return;
+      console.info(`[WebRTC] syncReceiverTrack(${track.kind}, id=${track.id.slice(0,8)}) from ${peerName} [${source}] readyState=${track.readyState} muted=${track.muted}`);
+
+      if (track.kind === 'video' && !track.muted && track.readyState === 'live') {
+        setRemoteCameraStates((prev) => ({ ...prev, [peerId]: true }));
+      }
+
+      setRemoteStreams((prev) => {
+        const existing = prev.find((rs) => rs.peerId === peerId);
+
+        if (existing) {
+          const stream = existing.stream;
+          // Replace any same-kind track if it's a different track object
+          const oldTrack = stream.getTracks().find((t) => t.kind === track.kind && t.id !== track.id);
+          if (oldTrack) {
+            stream.removeTrack(oldTrack);
+            console.info(`[WebRTC] Replaced old ${track.kind} track (${oldTrack.id.slice(0,8)}) with new (${track.id.slice(0,8)}) for ${peerName}`);
+          }
+          if (!stream.getTracks().some((t) => t.id === track.id)) {
+            stream.addTrack(track);
+            console.info(`[WebRTC] Added ${track.kind} track (${track.id.slice(0,8)}) to existing stream for ${peerName}`);
+          }
+          // Return a new array reference to trigger React re-render
+          return [...prev];
+        } else {
+          const newStream = new MediaStream([track]);
+          console.info(`[WebRTC] Created new remote stream for ${peerName} with ${track.kind} track`);
+          return [...prev, { peerId, peerName, stream: newStream }];
+        }
+      });
+    };
+
     // Handle incoming remote tracks
     pc.ontrack = (event) => {
       if (!isMountedRef.current) return;
       const { track } = event;
-      console.info(`[WebRTC] Remote ${track.kind} track received from ${peerName}`);
+      console.info(`[WebRTC] ontrack fired: ${track.kind} track from ${peerName} (id=${track.id.slice(0,8)}, readyState=${track.readyState}, muted=${track.muted})`);
 
-      setRemoteStreams((prev) => {
-        const existing = prev.find((rs) => rs.peerId === peerId);
-        let stream: MediaStream;
-
-        if (existing) {
-          stream = existing.stream;
-          if (!stream.getTracks().some((t) => t.id === track.id)) {
-            stream.addTrack(track);
-          }
-          // Produce a fresh MediaStream wrapper to trigger React re-renders in components
-          const freshStream = new MediaStream(stream.getTracks());
-          return prev.map((rs) => (rs.peerId === peerId ? { ...rs, stream: freshStream } : rs));
-        } else {
-          const freshTracks = event.streams[0] ? event.streams[0].getTracks() : [track];
-          const newStream = new MediaStream(freshTracks);
-          return [...prev, { peerId, peerName, stream: newStream }];
-        }
-      });
+      syncReceiverTrack(track, 'ontrack');
 
       track.onunmute = () => {
-        console.info(`[WebRTC] Remote ${track.kind} track is live from ${peerName}`);
+        console.info(`[WebRTC] Remote ${track.kind} track is live from ${peerName} (unmuted)`);
         if (track.kind === 'video') {
           setRemoteCameraStates((prev) => ({ ...prev, [peerId]: true }));
+        }
+        // Re-sync on unmute to ensure the track is in remoteStreams
+        syncReceiverTrack(track, 'onunmute');
+      };
+
+      track.onmute = () => {
+        console.info(`[WebRTC] Remote ${track.kind} track muted from ${peerName}`);
+        if (track.kind === 'video') {
+          setRemoteCameraStates((prev) => ({ ...prev, [peerId]: false }));
         }
       };
 
@@ -295,7 +348,7 @@ export function useWebRTC({
 
     peerConnectionsRef.current.set(peerId, pc);
     return pc;
-  }, [emit, userId, roomCode, reportDiagnostic]);
+  }, [emit, userId, roomCode, reportDiagnostic, tuneAudioSender]);
 
   // ── Create SDP offer and transmit (W3C Perfect Negotiation Offerer) ──
   const createOfferAndSend = useCallback(async (peerId: string, peerName: string, iceRestart = false) => {
@@ -310,9 +363,36 @@ export function useWebRTC({
 
     try {
       makingOfferRef.current.set(peerId, true);
+
+      // Before creating the offer, ensure our current local tracks are on the transceivers
+      const currentStream = localStreamRef.current;
+      if (currentStream) {
+        const localAudio = currentStream.getAudioTracks()[0];
+        const localVideo = currentStream.getVideoTracks()[0];
+        for (const t of pc.getTransceivers()) {
+          if (t.receiver.track.kind === 'audio' && localAudio && (!t.sender.track || t.sender.track.readyState === 'ended')) {
+            try {
+              await t.sender.replaceTrack(localAudio);
+              t.direction = 'sendrecv';
+            } catch (_) { /* ignore */ }
+          }
+          if (t.receiver.track.kind === 'video' && localVideo && (!t.sender.track || t.sender.track.readyState === 'ended')) {
+            try {
+              await t.sender.replaceTrack(localVideo);
+              t.direction = 'sendrecv';
+            } catch (_) { /* ignore */ }
+          }
+        }
+      }
+
       const offer = await pc.createOffer(iceRestart ? { iceRestart: true } : undefined);
       if (pc.signalingState !== 'stable') return;
       await pc.setLocalDescription(offer);
+
+      // Log transceiver directions in the offer for debugging
+      pc.getTransceivers().forEach((t, idx) => {
+        console.info(`[WebRTC] Offer transceiver[${idx}] for ${peerName}: kind=${t.receiver.track.kind} direction=${t.direction} senderTrack=${t.sender.track?.id?.slice(0,8) || 'null'}`);
+      });
 
       console.info(`[WebRTC] Sending ${iceRestart ? 'ICE-restart ' : ''}offer to ${peerName}`);
 
@@ -340,6 +420,68 @@ export function useWebRTC({
     }
   }, [userId, roomCode, createOfferAndSend, emit]);
 
+  // ── Helper: Sync all receiver tracks from a peer connection into remoteStreams ──
+  // This catches tracks that were set up during initial negotiation but never
+  // triggered ontrack (e.g. when direction changed from recvonly to sendrecv).
+  const syncAllReceiverTracks = useCallback((peerId: string, peerName: string) => {
+    const pc = peerConnectionsRef.current.get(peerId);
+    if (!pc) return;
+
+    const transceivers = pc.getTransceivers();
+    console.info(`[WebRTC] syncAllReceiverTracks for ${peerName}: ${transceivers.length} transceivers`);
+
+    transceivers.forEach((t, idx) => {
+      const recvTrack = t.receiver?.track;
+      console.info(`[WebRTC]   Transceiver[${idx}] kind=${recvTrack?.kind || '?'} direction=${t.direction} currentDirection=${t.currentDirection} recvTrack.readyState=${recvTrack?.readyState} recvTrack.muted=${recvTrack?.muted} recvTrack.id=${recvTrack?.id?.slice(0,8) || 'none'}`);
+
+      if (recvTrack && recvTrack.readyState === 'live') {
+        // Check if this track is already in remoteStreams
+        setRemoteStreams((prev) => {
+          const existing = prev.find((rs) => rs.peerId === peerId);
+          if (existing) {
+            if (!existing.stream.getTracks().some((st) => st.id === recvTrack.id)) {
+              // Replace any existing track of the same kind
+              const oldTrack = existing.stream.getTracks().find((st) => st.kind === recvTrack.kind);
+              if (oldTrack) existing.stream.removeTrack(oldTrack);
+              existing.stream.addTrack(recvTrack);
+              console.info(`[WebRTC] syncAllReceiverTracks: Added ${recvTrack.kind} track to existing stream for ${peerName}`);
+              return [...prev];
+            }
+            return prev;
+          } else {
+            const newStream = new MediaStream([recvTrack]);
+            console.info(`[WebRTC] syncAllReceiverTracks: Created new stream for ${peerName} with ${recvTrack.kind} track`);
+            return [...prev, { peerId, peerName, stream: newStream }];
+          }
+        });
+
+        // Set up unmute handler if not already set
+        if (recvTrack.kind === 'video' && !recvTrack.muted) {
+          setRemoteCameraStates((prev) => ({ ...prev, [peerId]: true }));
+        }
+
+        // Attach onunmute for late-arriving tracks
+        recvTrack.onunmute = () => {
+          console.info(`[WebRTC] syncAllReceiverTracks: ${recvTrack.kind} track unmuted from ${peerName}`);
+          if (recvTrack.kind === 'video') {
+            setRemoteCameraStates((prev) => ({ ...prev, [peerId]: true }));
+          }
+          // Ensure track is in stream
+          setRemoteStreams((prev) => {
+            const existing = prev.find((rs) => rs.peerId === peerId);
+            if (existing && !existing.stream.getTracks().some((st) => st.id === recvTrack.id)) {
+              const oldTrack = existing.stream.getTracks().find((st) => st.kind === recvTrack.kind);
+              if (oldTrack) existing.stream.removeTrack(oldTrack);
+              existing.stream.addTrack(recvTrack);
+              return [...prev];
+            }
+            return prev;
+          });
+        };
+      }
+    });
+  }, []);
+
   // ── Handle incoming SDP offer (W3C Perfect Negotiation Answerer) ──
   useSocketEvent<{ from: string; fromName: string; offer: RTCSessionDescriptionInit }>(
     'webrtc_offer',
@@ -351,6 +493,8 @@ export function useWebRTC({
       const isPolite = (userId || '') > data.from;
       const isMakingOffer = makingOfferRef.current.get(data.from) || false;
       const offerCollision = isMakingOffer || pc.signalingState !== 'stable';
+
+      console.info(`[WebRTC] Received offer from ${data.fromName}. isPolite=${isPolite}, signalingState=${pc.signalingState}, isMakingOffer=${isMakingOffer}, offerCollision=${offerCollision}`);
 
       if (offerCollision && !isPolite) {
         console.info(`[WebRTC] Offer collision with ${data.fromName}. Impolite peer ignoring offer.`);
@@ -367,8 +511,42 @@ export function useWebRTC({
         flushPendingCandidates(data.from);
 
         if (pc.signalingState === 'have-remote-offer') {
+          // Before creating the answer, ensure our local tracks are on the transceivers
+          const currentStream = localStreamRef.current;
+          if (currentStream) {
+            const localAudio = currentStream.getAudioTracks()[0];
+            const localVideo = currentStream.getVideoTracks()[0];
+            const transceivers = pc.getTransceivers();
+
+            for (const t of transceivers) {
+              if (t.receiver.track.kind === 'audio' && localAudio && !t.sender.track) {
+                try {
+                  await t.sender.replaceTrack(localAudio);
+                  t.direction = 'sendrecv';
+                  console.info(`[WebRTC] Attached local audio to transceiver for ${data.fromName} before answering`);
+                } catch (e: any) {
+                  console.warn(`[WebRTC] Failed to attach audio before answer:`, e.message);
+                }
+              }
+              if (t.receiver.track.kind === 'video' && localVideo && !t.sender.track) {
+                try {
+                  await t.sender.replaceTrack(localVideo);
+                  t.direction = 'sendrecv';
+                  console.info(`[WebRTC] Attached local video to transceiver for ${data.fromName} before answering`);
+                } catch (e: any) {
+                  console.warn(`[WebRTC] Failed to attach video before answer:`, e.message);
+                }
+              }
+            }
+          }
+
           const answer = await pc.createAnswer();
           await pc.setLocalDescription(answer);
+
+          // Log transceiver directions in the answer for debugging
+          pc.getTransceivers().forEach((t, idx) => {
+            console.info(`[WebRTC] Answer transceiver[${idx}]: kind=${t.receiver.track.kind} direction=${t.direction} currentDirection=${t.currentDirection} senderTrack=${t.sender.track?.id?.slice(0,8) || 'null'} senderEnabled=${t.sender.track?.enabled}`);
+          });
 
           console.info(`[WebRTC] Sending answer to ${data.fromName}`);
 
@@ -377,6 +555,11 @@ export function useWebRTC({
             roomCode,
             answer: pc.localDescription?.toJSON(),
           });
+
+          // After answering, sync receiver tracks — the offer may contain new tracks
+          window.setTimeout(() => {
+            syncAllReceiverTracks(data.from, data.fromName);
+          }, 100);
         }
       } catch (err: any) {
         console.warn(`[WebRTC] Failed to handle offer from ${data.fromName}:`, err.message);
@@ -393,14 +576,29 @@ export function useWebRTC({
       if (!pc) return;
 
       if (pc.signalingState !== 'have-local-offer') {
+        console.warn(`[WebRTC] Ignoring answer from ${data.from}: signalingState=${pc.signalingState} (expected have-local-offer)`);
         return;
       }
 
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-        console.info(`[WebRTC] Accepted answer from ${data.from}`);
+
+        // Log transceiver state after accepting answer
+        const peerName = participantsRef.current.find(p => p.id === data.from)?.name || data.from;
+        pc.getTransceivers().forEach((t, idx) => {
+          console.info(`[WebRTC] Post-answer transceiver[${idx}] with ${peerName}: kind=${t.receiver.track.kind} direction=${t.direction} currentDirection=${t.currentDirection} recvTrack.readyState=${t.receiver.track.readyState} recvTrack.muted=${t.receiver.track.muted}`);
+        });
+
+        console.info(`[WebRTC] Accepted answer from ${peerName} (${data.from})`);
         flushPendingCandidates(data.from);
         drainPendingOffer(data.from);
+
+        // CRITICAL: After accepting the answer, sync receiver tracks.
+        // The answerer may have added media tracks that we didn't know about
+        // during the initial ontrack event.
+        window.setTimeout(() => {
+          syncAllReceiverTracks(data.from, peerName);
+        }, 200);
       } catch (err: any) {
         console.warn(`[WebRTC] Failed to set remote answer from ${data.from}:`, err.message);
       }
@@ -494,17 +692,25 @@ export function useWebRTC({
   });
 
   // ── Helper to renegotiate SDP offer with all peers ──
+  // CRITICAL: Respect the offerer/answerer roles. Only the peer with the
+  // lower userId should create offers (the "impolite" offerer). The peer
+  // with the higher userId must REQUEST the other peer to send a new offer.
+  // Violating this causes offer-collision glare and one-way media.
   const renegotiateWithAllPeers = useCallback(() => {
     participantsRef.current
       .filter((p) => p.id !== userId)
       .forEach((p) => {
-        if ((userId || '') < p.id) {
+        if (userId && userId < p.id) {
+          // We are the offerer (impolite) — create and send the offer
+          console.info(`[WebRTC] Renegotiating as OFFERER with ${p.name} (we=${userId?.slice(-4)} < peer=${p.id.slice(-4)})`);
           createOfferAndSend(p.id, p.name);
         } else {
+          // We are the answerer (polite) — ask the other peer to send us an offer
+          console.info(`[WebRTC] Requesting renegotiation from ${p.name} (we=${userId?.slice(-4)} > peer=${p.id.slice(-4)})`);
           emit('webrtc_renegotiate_request', { to: p.id, roomCode });
         }
       });
-  }, [userId, roomCode, createOfferAndSend, emit]);
+  }, [userId, createOfferAndSend, emit, roomCode]);
 
   // ── Continuous Mesh Sync Effect (Prevents 3+ peer connection deadlocks) ──
   useEffect(() => {
@@ -660,6 +866,8 @@ export function useWebRTC({
               echoCancellation: true,
               noiseSuppression: true,
               autoGainControl: true,
+              channelCount: 1,
+              sampleRate: 48000,
             },
           });
           const newAudioTrack = media.getAudioTracks()[0];
@@ -678,11 +886,13 @@ export function useWebRTC({
                 operations.push(
                   transceiver.sender.replaceTrack(newAudioTrack).then(() => {
                     console.info(`[WebRTC] Audio sender updated for ${peerId}`);
+                    return tuneAudioSender(pc, peerId);
                   })
                 );
               } else {
                 pc.addTrack(newAudioTrack, currentStream);
                 console.info(`[WebRTC] Audio sender added for ${peerId}`);
+                operations.push(tuneAudioSender(pc, peerId));
               }
             });
 
@@ -710,7 +920,7 @@ export function useWebRTC({
       setIsMicOn(false);
       emit('webrtc_mic_toggle', { isMicOn: false, roomCode });
     }
-  }, [isMicOn, getOrCreateLocalStream, roomCode, emit, renegotiateWithAllPeers, reportDiagnostic]);
+  }, [isMicOn, getOrCreateLocalStream, roomCode, emit, renegotiateWithAllPeers, reportDiagnostic, tuneAudioSender]);
 
   // ── Leave Call / Cleanup ──
   const leaveCall = useCallback(() => {
