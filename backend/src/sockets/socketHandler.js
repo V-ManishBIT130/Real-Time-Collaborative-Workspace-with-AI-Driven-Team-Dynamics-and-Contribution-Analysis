@@ -61,6 +61,8 @@ function getSafeParticipants(room) {
 // ============================================================
 function findRoomByUserId(userId) {
   for (const [code, room] of rooms) {
+    // Skip completed/ended rooms — users should be able to start new sessions
+    if (room.status === 'completed') continue;
     if (room.participants.some(p => p.id === userId)) {
       return { code, room };
     }
@@ -632,6 +634,11 @@ module.exports = function initializeSocket(io) {
             room.status = 'completed';
             room.endedAt = new Date().toISOString();
 
+            // Calculate actual session duration in minutes
+            const startMs = new Date(room.startedAt).getTime();
+            const endMs = new Date(room.endedAt).getTime();
+            const actualDuration = Math.round((endMs - startMs) / 60000);
+
             // Update MongoDB
             await Session.findByIdAndUpdate(room.sessionDbId, {
               status: 'completed',
@@ -641,9 +648,18 @@ module.exports = function initializeSocket(io) {
             io.to(room.roomCode).emit('session_ended', {
               reason: 'timer',
               messageCount: room.messages.length,
-              duration: room.settings.timerDuration
+              duration: room.settings.timerDuration,
+              actualDuration
             });
-            console.log(`⏱️ Room ${room.roomCode} session ended (timer). ${room.messages.length} messages.`);
+            console.log(`⏱️ Room ${room.roomCode} session ended (timer). ${room.messages.length} messages. Actual duration: ${actualDuration}m`);
+
+            // Schedule cleanup of completed room after 5 minutes
+            setTimeout(() => {
+              if (rooms.has(room.roomCode) && rooms.get(room.roomCode).status === 'completed') {
+                rooms.delete(room.roomCode);
+                console.log(`🗑️ Completed room ${room.roomCode} cleaned up (post-timer).`);
+              }
+            }, 5 * 60 * 1000);
 
             // ── Trigger ML Analysis (async — doesn't block) ──
             analyzeSession(io, room).catch(err => {
@@ -990,6 +1006,11 @@ module.exports = function initializeSocket(io) {
         room.status = 'completed';
         room.endedAt = new Date().toISOString();
 
+        // Calculate actual session duration in minutes
+        const startMs = new Date(room.startedAt).getTime();
+        const endMs = new Date(room.endedAt).getTime();
+        const actualDuration = Math.round((endMs - startMs) / 60000);
+
         // Save final code snapshot to MongoDB
         if (room.codeContent) {
           EditorEvent.create({
@@ -1013,10 +1034,19 @@ module.exports = function initializeSocket(io) {
         io.to(room.roomCode).emit('session_ended', {
           reason: 'host',
           messageCount: room.messages.length,
-          duration: room.settings.timerDuration
+          duration: room.settings.timerDuration,
+          actualDuration
         });
 
-        console.log(`🛑 Room ${room.roomCode} ended early by host. ${room.messages.length} messages.`);
+        console.log(`🛑 Room ${room.roomCode} ended early by host. ${room.messages.length} messages. Actual duration: ${actualDuration}m`);
+
+        // Schedule cleanup of completed room after 5 minutes
+        setTimeout(() => {
+          if (rooms.has(room.roomCode) && rooms.get(room.roomCode).status === 'completed') {
+            rooms.delete(room.roomCode);
+            console.log(`🗑️ Completed room ${room.roomCode} cleaned up (post-host-end).`);
+          }
+        }, 5 * 60 * 1000);
 
         // ── Trigger ML Analysis (async — doesn't block) ──
         analyzeSession(io, room).catch(err => {

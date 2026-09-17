@@ -30,6 +30,7 @@ export default function Workspace() {
   const [analysisProgressMsg, setAnalysisProgressMsg] = useState('');
   const [reportSessionId, setReportSessionId] = useState<string | null>(null);
   const [reportScore, setReportScore] = useState<number | null>(null);
+  const [sessionActualDuration, setSessionActualDuration] = useState<number | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -192,9 +193,19 @@ export default function Workspace() {
   });
 
   // ── Session & Analysis Events ──
-  useSocketEvent('session_ended', () => {
+  useSocketEvent<{ reason?: string; duration?: number; actualDuration?: number }>('session_ended', (d) => {
     store.setRoomStatus('completed');
     if (isListening) stopListening();
+
+    // Store actual session duration (minutes) from server
+    if (d?.actualDuration != null) {
+      setSessionActualDuration(d.actualDuration);
+    } else if (d?.duration != null) {
+      setSessionActualDuration(d.duration);
+    }
+
+    // Stop all media tracks and tear down WebRTC peer connections
+    webrtc.leaveCall();
   });
 
   useSocketEvent<{ message: string; sessionId?: string }>('analysis_started', (d) => {
@@ -658,7 +669,7 @@ export default function Workspace() {
               <div className="summary-stats">
                 <div className="stat"><span className="stat-value">{store.messages.length}</span><span className="stat-label">Messages</span></div>
                 <div className="stat"><span className="stat-value">{store.participants.length}</span><span className="stat-label">Participants</span></div>
-                <div className="stat"><span className="stat-value">{store.settings.timerDuration}m</span><span className="stat-label">Duration</span></div>
+                <div className="stat"><span className="stat-value">{sessionActualDuration != null ? `${sessionActualDuration}m` : `${store.settings.timerDuration}m`}</span><span className="stat-label">Duration</span></div>
                 {reportScore !== null && (
                   <div className="stat"><span className="stat-value" style={{ color: '#10b981' }}>{Math.round(reportScore * 100)}%</span><span className="stat-label">Team IQ</span></div>
                 )}
@@ -718,14 +729,6 @@ export default function Workspace() {
               )}
 
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '12px' }}>
-                {reportSessionId && analysisStatus !== 'ready' && (
-                  <button
-                    className="secondary-btn"
-                    onClick={() => navigate(`/report/${reportSessionId}`)}
-                  >
-                    Check Report
-                  </button>
-                )}
                 <button className="primary-btn" onClick={() => { store.reset(); navigate('/'); }}>Back to Home</button>
               </div>
             </div>

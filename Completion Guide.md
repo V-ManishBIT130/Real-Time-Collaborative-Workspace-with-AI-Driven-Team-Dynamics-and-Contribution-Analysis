@@ -101,6 +101,30 @@ Three critical bugs in `useWebRTC.ts` were resolved:
 - **Long session stability**: In a ~10 minute session, tracks ended (`Remote audio track ended from Jhon Doe`) — likely caused by the Cloudflare tunnel dropping the backend connection (confirmed by cloudflared logs: `Unable to reach the origin service... target machine actively refused it`). This is a **tunnel stability issue**, not a WebRTC bug. The backend server was briefly unreachable, causing Socket.IO disconnect which triggered peer connection teardown.
 - **Cloudflare tunnel limitations**: The tunnel only proxies HTTP/WebSocket traffic. WebRTC media flows peer-to-peer via STUN/TURN (UDP/TCP). When peers are behind symmetric NATs, they rely on TURN relay. The free OpenRelay TURN servers are used as fallback, which may have rate limits or reduced reliability for sustained sessions.
 
+#### Session End & UX Fixes (2026-09-18)
+
+Four additional bugs were fixed after continued multi-device testing:
+
+1. **Camera/mic stayed on after session ended**:
+   - When the host ended the session, the `session_ended` event handler only set `roomStatus` to `completed` — it did not stop WebRTC media tracks or tear down peer connections. The webcam LED would remain on and video tiles stayed visible.
+   - **Fix**: `session_ended` handler now calls `webrtc.leaveCall()` which stops all local media tracks (turns off webcam LED), closes all `RTCPeerConnection`s, and clears remote streams. Speech recognition is also stopped.
+
+2. **Could not start a new session after ending one ("active session in another tab")**:
+   - After a session ended, the in-memory `rooms` map still contained the completed room with participants listed. `findRoomByUserId()` found the user in the completed room and blocked new room creation.
+   - **Fix**: `findRoomByUserId()` now skips rooms with `status === 'completed'`. Additionally, a 5-minute delayed cleanup (`setTimeout`) deletes completed rooms from the `rooms` map to free memory.
+
+3. **Video tiles overlapped when multiple cameras turned on**:
+   - Each `VideoTile` captured its initial position once via `useState`. When new tiles appeared (e.g. a remote peer turned on camera), existing tiles didn't reposition — causing visual overlap.
+   - **Fix**: Added a `positionKey` to the `useDraggable` hook. When the layout changes (tiles added/removed), each tile's position recalculates to maintain proper vertical stacking (150px spacing). Tiles remain fully draggable after initial positioning.
+
+4. **Session duration always showed configured timer instead of actual elapsed time**:
+   - The `session_ended` event only sent `duration: room.settings.timerDuration` (the configured value, e.g. 15m), not the actual elapsed time when the host ends early.
+   - **Fix**: Backend now computes `actualDuration` from `startedAt` → `endedAt` timestamps and sends it in the `session_ended` event. The session summary UI displays the real elapsed time.
+
+5. **Removed redundant "Check Report" button**:
+   - A gray "Check Report" button appeared in the session summary during ML analysis. It served no useful purpose since the full "View Team Intelligence Report" button appears once analysis completes.
+   - **Fix**: Removed the button entirely. Users now see the analysis progress indicator, then the report button when ready.
+
 ---
 
 ### 6. Phase 6 — Multi-Device Remote Tunneling & HTTPS (Completed ✅)

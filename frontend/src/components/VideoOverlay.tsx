@@ -52,10 +52,20 @@ function RemoteAudio({ stream, peerName }: { stream: MediaStream; peerName: stri
 }
 
 // ─── Lightweight Draggable Hook with Viewport Bounds ───
-function useDraggable(initialX: number, initialY: number) {
+function useDraggable(initialX: number, initialY: number, positionKey: string) {
   const [pos, setPos] = useState({ x: initialX, y: initialY });
   const posRef = useRef(pos);
+  const prevKeyRef = useRef(positionKey);
   posRef.current = pos;
+
+  // Reset position when the layout key changes (e.g. a new tile inserted above/below)
+  useEffect(() => {
+    if (prevKeyRef.current !== positionKey) {
+      prevKeyRef.current = positionKey;
+      // Only reset if user hasn't dragged (position is still at previous initial)
+      setPos({ x: initialX, y: initialY });
+    }
+  }, [positionKey, initialX, initialY]);
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0 || (e.target as HTMLElement).closest('button')) return;
@@ -91,6 +101,7 @@ function VideoTile({
   isLocal,
   initialX,
   initialY,
+  positionKey,
 }: {
   stream: MediaStream | null;
   name: string;
@@ -100,9 +111,10 @@ function VideoTile({
   isLocal?: boolean;
   initialX: number;
   initialY: number;
+  positionKey: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { pos, onMouseDown } = useDraggable(initialX, initialY);
+  const { pos, onMouseDown } = useDraggable(initialX, initialY, positionKey);
 
   useEffect(() => {
     const el = videoRef.current;
@@ -221,15 +233,17 @@ export default function VideoOverlay({
               isLocal
               initialX={defaultRightX}
               initialY={65}
+              positionKey={`local_${remotePeersToShow.length}`}
             />
           )}
 
-          {/* Remote tiles */}
+          {/* Remote tiles — stacked below local with 150px spacing */}
           {remotePeersToShow.map((p, index) => {
             const remoteEntry = remoteStreams.find((rs) => rs.peerId === p.id);
             const hasCamera = remoteCameraStates[p.id] === true;
             const isMuted = remoteMicStates[p.id] === false;
-            const yOffset = (isCameraOn || isMicOn ? index + 1 : index) * 145;
+            const slotIndex = (isCameraOn || isMicOn) ? index + 1 : index;
+            const yOffset = slotIndex * 150;
 
             return (
               <VideoTile
@@ -242,6 +256,7 @@ export default function VideoOverlay({
                 isLocal={false}
                 initialX={defaultRightX}
                 initialY={65 + yOffset}
+                positionKey={`${p.id}_slot${slotIndex}_of${remotePeersToShow.length}`}
               />
             );
           })}

@@ -127,12 +127,14 @@ PORT=5000
 | **Real-Time Core** | ✅ Complete | Room create/join, timer sync, real-time chat, and toast alerts. |
 | **Whiteboard (Excalidraw)** | ✅ Complete | Synchronized collaborative drawing with MongoDB persistence. |
 | **Code Editor (Monaco)** | ✅ Complete | Multi-language real-time code editor with language switching. |
-| **Rejoin & Lifecycle** | ✅ Complete | Google Meet knock-to-admit flow, host transfer, and kick controls. |
-| **ML Intelligence Engine** | ✅ Complete | 8 analysis modules, post-session reports, 9/9 benchmark tests. |
-| **Remote Speech Recognition** | ⚠️ Incomplete | Chrome Web Speech API operates on local host; exhibits network errors over remote tunnels. |
-| **WebRTC Multi-Device Streaming**| ⚠️ Incomplete | P2P mesh video/audio streaming across remote laptops experiences asymmetric track renegotiation and NAT issues. Migration to an SFU (e.g. LiveKit / mediasoup) is recommended for production. |
+| **Rejoin & Lifecycle** | ✅ Complete | Google Meet knock-to-admit flow, host transfer, kick controls, and proper session-end cleanup (media stop, room state reset). |
+| **ML Intelligence Engine** | ✅ Complete | 9 analysis modules, post-session reports, 9/9 benchmark tests. |
+| **WebRTC Multi-Device Streaming**| ✅ Working | Full-mesh P2P video/audio with W3C Perfect Negotiation. Auto media cleanup on session end. Tested with 2 and 3 devices over Cloudflare tunnel. |
+| **Session End UX** | ✅ Complete | Camera/mic auto-stop on session end, accurate elapsed duration display, stacked video tile layout, and immediate new session creation after ending one. |
+| **Remote Speech Recognition** | ⚠️ Partial | Chrome Web Speech API works on localhost; exhibits `no-speech`/`network` errors over remote tunnels due to Chrome's dependency on Google Cloud speech servers. |
 
 ---
 
 ## 📝 License
 This project is licensed under the MIT License.
+
